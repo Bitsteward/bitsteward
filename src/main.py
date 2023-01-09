@@ -14,14 +14,19 @@ class AppWindow(Adw.ApplicationWindow):
     nombre = 0
     pages = []
 
+    
+
+    def load_json_data(self):
+        cmdOutput = subprocess.getoutput(cmd)
+        jsonOutput = json.loads(cmdOutput)
+        return jsonOutput
+
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
-
         self.cmd = "***REMOVED***bw list items --session ***REMOVED***"
-        self.cmdOutput = subprocess.getoutput(self.cmd)
-        self.jsonOutput = json.loads(self.cmdOutput)
         
+        self.jsonOutput = self.load_json_data()
 
         self.init_ui()
 
@@ -97,13 +102,14 @@ class AppWindow(Adw.ApplicationWindow):
             
             stack_sidebar.add_titled(self.box_page1, name, title)
 
-            
+
 
         self.leaflet_main.append(stack_sidebar)
 
 
         ### display the content
         self.set_content(window) 
+
 
 
     def btn_increment(self, widget):
