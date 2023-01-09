@@ -2,6 +2,10 @@
 
 import subprocess
 import json
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -17,6 +21,7 @@ class AppWindow(Adw.ApplicationWindow):
     
 
     def load_json_data(self):
+        cmd = "***REMOVED***bw list items --session " + os.getenv("BW_SESSION")
         cmdOutput = subprocess.getoutput(cmd)
         jsonOutput = json.loads(cmdOutput)
         return jsonOutput
@@ -24,7 +29,6 @@ class AppWindow(Adw.ApplicationWindow):
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
-        self.cmd = "***REMOVED***bw list items --session ***REMOVED***"
         
         self.jsonOutput = self.load_json_data()
 
