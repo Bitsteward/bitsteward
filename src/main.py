@@ -6,6 +6,8 @@ import gi
 import subprocess
 import json
 import os
+import time
+import threading
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -18,6 +20,8 @@ class AppWindow(Adw.ApplicationWindow):
 
     nombre = 0
     pages = []
+
+    totp_code = ""
 
     def load_json_data(self):
         cmd = "***REMOVED***bw list items --session " + \
@@ -56,11 +60,12 @@ class AppWindow(Adw.ApplicationWindow):
         window.append(self.leaflet_main)  # add the content to the main window
 
         ### SideBar ###
+        # Stack
         stack_sidebar = Gtk.Stack()
         stack_sidebar.set_hexpand(True)
         stack_sidebar.set_vexpand(True)
 
-        # add stack to the sidebar
+        # Sidebar
         sidebar = Gtk.StackSidebar()
         sidebar.set_stack(stack_sidebar)
         sidebar.set_vexpand(True)
@@ -115,10 +120,21 @@ class AppWindow(Adw.ApplicationWindow):
                 print(f"could not load password for id: {page['id']} ({page['name']})")
 
             listbox1.append(row_password)
+
+            # # TOTP
+            # row_totp = Adw.ActionRow(
+            #     subtitle = "Verification code"
+            # )
+            # try:
+            #     row_totp.set_title(page["login"]["totp"])
+            # except:
+            #     print(f"could not load TOTP code for id: {page['id']} ({page['name']})")
+            # listbox1.append(row_totp)
+
             # Sidebar items/names
             name = page["id"]
             title = page["name"]
-            
+
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
@@ -129,9 +145,8 @@ class AppWindow(Adw.ApplicationWindow):
         # display the content
         self.set_content(window)
 
-    def btn_increment(self, widget):
-        self.nombre = self.nombre + 1
-        self.button_increment.set_label(str(self.nombre))
+
+
 
 
 def on_activate(app):
