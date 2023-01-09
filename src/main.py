@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from gi.repository import Gtk, Adw, GLib
+
 
 import gi
 import subprocess
@@ -11,11 +11,13 @@ import daemon
 import time
 import threading
 
+
 from dotenv import load_dotenv
-load_dotenv()
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw, GLib
+load_dotenv()
 
 
 class AppWindow(Adw.ApplicationWindow):
@@ -25,18 +27,21 @@ class AppWindow(Adw.ApplicationWindow):
 
     totp_code = ""
 
-    def start_bw_server():
+    def start_bw_server(self):
         cmd = "***REMOVED***bw serve --port 8055 --session " + os.getenv("BW_SESSION")
         os.system(cmd)
 
     def load_json_data(self):
-        threading.Thread(target=self.start_bw_server).start()
+        thread_bw_server = threading.Thread(target=self.start_bw_server)
+        thread_bw_server.daemon = True
+        thread_bw_server.start()
+
+        time.sleep(0.5)
+
         cmdOutput = requests.get("http://localhost:8055/list/object/items")
 
         jsonOutput = json.loads(cmdOutput.content)
-
         return jsonOutput["data"]["data"]
-
     
 
 
