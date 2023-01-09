@@ -18,7 +18,6 @@ class AppWindow(Adw.ApplicationWindow):
     nombre = 0
     pages = []
 
-    
 
     def load_json_data(self):
         cmd = "***REMOVED***bw list items --session " + os.getenv("BW_SESSION")
@@ -77,13 +76,13 @@ class AppWindow(Adw.ApplicationWindow):
         for page in self.jsonOutput:
             
             # clamp
-            self.box_page1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-            self.clamp_page1 = Adw.Clamp()
-            self.box_page1.append(self.clamp_page1)
+            self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            self.clamp = Adw.Clamp()
+            self.box_content.append(self.clamp)
 
 
-            # clamp content box
-            content_page1 = Gtk.Box(
+            # content box
+            content = Gtk.Box(
                 spacing=10,
                 margin_start=20,
                 margin_end=20,
@@ -91,12 +90,29 @@ class AppWindow(Adw.ApplicationWindow):
                 margin_bottom=20,
                 orientation=Gtk.Orientation.VERTICAL
             )
-            self.clamp_page1.set_child(content_page1)
+            self.clamp.set_child(content)
 
             # label
-            content_page1_label = Gtk.Label(label = page["name"])
-            content_page1_label.get_style_context ().add_class ('title-1')
-            content_page1.append(content_page1_label)
+            vault_item_title = Gtk.Label(label = page["name"])
+            vault_item_title.get_style_context().add_class ('title-1')
+            content.append(vault_item_title)
+
+
+            # Username and password box
+            listbox1 = Gtk.ListBox(selection_mode = Gtk.SelectionMode.NONE)
+            listbox1.get_style_context().add_class('boxed-list')
+            content.append(listbox1)
+
+            # Username
+            row_username = Adw.EntryRow(title = "Username")
+
+            try:
+                row_username.set_text(page["login"]["username"])
+            except:
+                print(f"could not load username for id: {page['id']} ({page['name']})")
+
+            listbox1.append(row_username)
+
 
 
             # Sidebar items/names
@@ -104,7 +120,7 @@ class AppWindow(Adw.ApplicationWindow):
             title = page["name"]
             
             
-            stack_sidebar.add_titled(self.box_page1, name, title)
+            stack_sidebar.add_titled(self.box_content, name, title)
 
 
 
