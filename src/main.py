@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from gi.repository import Gtk, Adw, GLib
+
 import gi
 import subprocess
 import json
@@ -106,6 +107,14 @@ class AppWindow(Adw.ApplicationWindow):
 
             listbox1.append(row_username)
 
+            # Password
+            row_password = Adw.PasswordEntryRow(title="Password")
+            try:
+                row_password.set_text(page["login"]["password"])
+            except:
+                print(f"could not load password for id: {page['id']} ({page['name']})")
+
+            listbox1.append(row_password)
             # Sidebar items/names
             name = page["id"]
             title = page["name"]
