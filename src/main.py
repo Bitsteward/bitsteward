@@ -18,6 +18,7 @@ class AppWindow(Adw.ApplicationWindow):
 
         super(AppWindow, self).__init__(application=app)
 
+        self.cmd = "***REMOVED***bw list items --session ***REMOVED***"
         self.cmdOutput = subprocess.getoutput(self.cmd)
         self.jsonOutput = json.loads(self.cmdOutput)
         
@@ -46,74 +47,6 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.set_can_unfold (True)
         self.leaflet_main.set_can_navigate_back(True)
         window.append(self.leaflet_main) # add the content to the main window
-
-
-
-        # ### Page 1 ###
-        # # clamp
-        # self.box_page1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        # self.clamp_page1 = Adw.Clamp()
-        # self.box_page1.append(self.clamp_page1)
-
-        # # self.leaflet_main.append(self.clamp_page2)
-
-        # # clamp content box
-        # content_page1 = Gtk.Box(
-        #     spacing=10,
-        #     margin_start=20,
-        #     margin_end=20,
-        #     margin_top=20,
-        #     margin_bottom=20,
-        #     orientation=Gtk.Orientation.VERTICAL
-        # )
-        # self.clamp_page1.set_child(content_page1)
-        # content_page1.get_style_context ().add_class ('card')
-
-        # # label
-        # content_page1_label = Gtk.Label(label = "page 1")
-        # content_page1_label.get_style_context ().add_class ('title-1')
-        # content_page1.append(content_page1_label)
-
-
-        # # bouton increment
-        # self.button_increment = Gtk.Button(label = "Increment! (0)", halign = Gtk.Align.START)
-        # self.button_increment.connect('clicked', self.btn_increment)
-        # content_page1.append(self.button_increment)
-
-        # self.pages.append(self.box_page1)
-
-
-
-        # ### Page 2 ###
-        # self.box_page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        # self.clamp_page2 = Adw.Clamp()
-        # self.box_page2.append(self.clamp_page2)
-
-
-        # # clamp content box
-        # content_page2 = Gtk.Box(
-        #     spacing=10,
-        #     margin_start=20,
-        #     margin_end=20,
-        #     margin_top=20,
-        #     margin_bottom=20,
-        #     orientation=Gtk.Orientation.VERTICAL
-        # )
-        # self.clamp_page2.set_child(content_page2)
-        # content_page2.get_style_context ().add_class ('card')
-        
-        # # label
-        # content_page2_label = Gtk.Label(label = "Page 2")
-        # content_page2_label.get_style_context ().add_class ('title-1')
-        # content_page2.append(content_page2_label)
-
-        # # bouton increment
-        # self.button_increment = Gtk.Button(label = "Increment! (0)", halign = Gtk.Align.START)
-        # self.button_increment.connect('clicked', self.btn_increment)
-        # content_page2.append(self.button_increment)
-
-        # self.pages.append(self.box_page2)
-
 
 
         ### SideBar ###
@@ -163,6 +96,8 @@ class AppWindow(Adw.ApplicationWindow):
             
             
             stack_sidebar.add_titled(self.box_page1, name, title)
+
+            
 
         self.leaflet_main.append(stack_sidebar)
 
