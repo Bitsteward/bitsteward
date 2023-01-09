@@ -34,7 +34,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.set_title('Titre')
+        self.set_title('Bitsteward')
         self.set_default_size(450, 350)  # default app size
         self.set_size_request(400, 300)  # minimum app size
 
@@ -128,6 +128,6 @@ def on_activate(app):
     win.present()
 
 
-app = Adw.Application(application_id='com.zetcode.Simple')
+app = Adw.Application(application_id='net.adaoh.Bitsteward')
 app.connect('activate', on_activate)
 app.run(None)
