@@ -6,6 +6,8 @@ import gi
 import subprocess
 import json
 import os
+import requests
+import daemon
 import time
 import threading
 
@@ -23,12 +25,20 @@ class AppWindow(Adw.ApplicationWindow):
 
     totp_code = ""
 
+    def start_bw_server():
+        cmd = "***REMOVED***bw serve --port 8055 --session " + os.getenv("BW_SESSION")
+        os.system(cmd)
+
     def load_json_data(self):
-        cmd = "***REMOVED***bw list items --session " + \
-            os.getenv("BW_SESSION")
-        cmdOutput = subprocess.getoutput(cmd)
-        jsonOutput = json.loads(cmdOutput)
-        return jsonOutput
+        threading.Thread(target=self.start_bw_server).start()
+        cmdOutput = requests.get("http://localhost:8055/list/object/items")
+
+        jsonOutput = json.loads(cmdOutput.content)
+
+        return jsonOutput["data"]["data"]
+
+    
+
 
     def __init__(self, app):
 
