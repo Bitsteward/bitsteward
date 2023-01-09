@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from gi.repository import Gtk, Adw, GLib
+import gi
 import subprocess
 import json
 import os
@@ -7,10 +9,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib
 
 
 class AppWindow(Adw.ApplicationWindow):
@@ -18,9 +18,9 @@ class AppWindow(Adw.ApplicationWindow):
     nombre = 0
     pages = []
 
-
     def load_json_data(self):
-        cmd = "***REMOVED***bw list items --session " + os.getenv("BW_SESSION")
+        cmd = "***REMOVED***bw list items --session " + \
+            os.getenv("BW_SESSION")
         cmdOutput = subprocess.getoutput(cmd)
         jsonOutput = json.loads(cmdOutput)
         return jsonOutput
@@ -28,34 +28,31 @@ class AppWindow(Adw.ApplicationWindow):
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
-        
+
         self.jsonOutput = self.load_json_data()
 
         self.init_ui()
 
     def init_ui(self):
         self.set_title('Titre')
-        self.set_default_size(450, 350) # default app size
-        self.set_size_request(400, 300) # minimum app size
+        self.set_default_size(450, 350)  # default app size
+        self.set_size_request(400, 300)  # minimum app size
 
         # Main window
         window = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
 
         # Headerbar
         header_bar = Gtk.HeaderBar()
         window.append(header_bar)
 
-
         # Leaflet
-        self.leaflet_main = Adw.Leaflet (
-            halign = Gtk.Align.FILL,
-            valign = Gtk.Align.FILL
+        self.leaflet_main = Adw.Leaflet(
+            halign=Gtk.Align.FILL,
+            valign=Gtk.Align.FILL
         )
-        self.leaflet_main.set_can_unfold (True)
+        self.leaflet_main.set_can_unfold(True)
         self.leaflet_main.set_can_navigate_back(True)
-        window.append(self.leaflet_main) # add the content to the main window
-
+        window.append(self.leaflet_main)  # add the content to the main window
 
         ### SideBar ###
         stack_sidebar = Gtk.Stack()
@@ -70,16 +67,13 @@ class AppWindow(Adw.ApplicationWindow):
 
         self.leaflet_main.append(sidebar)
 
-
-
         # add elements to the stack
         for page in self.jsonOutput:
-            
+
             # clamp
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
-
 
             # content box
             content = Gtk.Box(
@@ -93,18 +87,17 @@ class AppWindow(Adw.ApplicationWindow):
             self.clamp.set_child(content)
 
             # label
-            vault_item_title = Gtk.Label(label = page["name"])
-            vault_item_title.get_style_context().add_class ('title-1')
+            vault_item_title = Gtk.Label(label=page["name"])
+            vault_item_title.get_style_context().add_class('title-1')
             content.append(vault_item_title)
 
-
             # Username and password box
-            listbox1 = Gtk.ListBox(selection_mode = Gtk.SelectionMode.NONE)
+            listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
             listbox1.get_style_context().add_class('boxed-list')
             content.append(listbox1)
 
             # Username
-            row_username = Adw.EntryRow(title = "Username")
+            row_username = Adw.EntryRow(title="Username")
 
             try:
                 row_username.set_text(page["login"]["username"])
@@ -113,30 +106,21 @@ class AppWindow(Adw.ApplicationWindow):
 
             listbox1.append(row_username)
 
-
-
             # Sidebar items/names
             name = page["id"]
             title = page["name"]
-            
-            
+
             stack_sidebar.add_titled(self.box_content, name, title)
-
-
 
         self.leaflet_main.append(stack_sidebar)
 
-
-        ### display the content
-        self.set_content(window) 
-
-
+        # display the content
+        self.set_content(window)
 
     def btn_increment(self, widget):
         self.nombre = self.nombre + 1
         self.button_increment.set_label(str(self.nombre))
 
-        
 
 def on_activate(app):
 
