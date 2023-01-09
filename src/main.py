@@ -118,6 +118,9 @@ class AppWindow(Adw.ApplicationWindow):
             # Sidebar items/names
             name = page["id"]
             title = page["name"]
+            
+            if (len(title) > 30):
+                title = title[0:27] + "..."
 
             stack_sidebar.add_titled(self.box_content, name, title)
 
