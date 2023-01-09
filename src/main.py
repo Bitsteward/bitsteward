@@ -27,10 +27,12 @@ class AppWindow(Adw.ApplicationWindow):
 
     totp_code = ""
 
+    # BW Server thread
     def start_bw_server(self):
         cmd = "***REMOVED***bw serve --port 8055 --session " + os.getenv("BW_SESSION")
         os.system(cmd)
 
+    # load the JSON data from the BW Server
     def load_json_data(self):
         thread_bw_server = threading.Thread(target=self.start_bw_server)
         thread_bw_server.daemon = True
@@ -38,12 +40,12 @@ class AppWindow(Adw.ApplicationWindow):
 
         time.sleep(0.5)
 
+        requests.post("http://localhost:8055/sync")
+
         cmdOutput = requests.get("http://localhost:8055/list/object/items")
 
         jsonOutput = json.loads(cmdOutput.content)
         return jsonOutput["data"]["data"]
-    
-
 
     def __init__(self, app):
 
