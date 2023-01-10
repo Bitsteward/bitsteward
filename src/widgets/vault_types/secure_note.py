@@ -30,7 +30,7 @@ class SecureNote(Gtk.Widget):
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
-        # Username and password box
+        # Secure Note box
         listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
         listbox1.get_style_context().add_class('boxed-list')
         content.append(listbox1)

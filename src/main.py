@@ -111,15 +111,17 @@ class AppWindow(Adw.ApplicationWindow):
 
             if (page["type"] == 1):
                 content = Login.init_ui(self, page)
-                self.clamp.set_child(content)
+
             if (page["type"] == 2):
                 content = SecureNote.init_ui(self, page)
-                self.clamp.set_child(content)
+
             if (page["type"] == 3):
                 content = CreditCard.init_ui(self, page)
-                self.clamp.set_child(content)
+
             if (page["type"] == 4):
-                print("ID")
+                content = Id.init_ui(self, page)
+                
+            self.clamp.set_child(content)
 
             # Sidebar items/names
             name = page["id"]
