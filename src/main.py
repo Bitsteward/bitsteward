@@ -105,6 +105,7 @@ class AppWindow(Adw.ApplicationWindow):
             # type 4 = ID
             scrollView = Gtk.ScrolledWindow()
             scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            scrollView.set_kinetic_scrolling(True)
 
             # clamp
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
