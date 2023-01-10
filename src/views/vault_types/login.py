@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-
+from gi.repository import Gtk, Adw, GLib
 import gi
 import subprocess
 import json
@@ -17,7 +17,6 @@ from dotenv import load_dotenv
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib
 load_dotenv()
 
 
@@ -51,17 +50,18 @@ class Login(Gtk.Widget):
         try:
             row_username.set_text(page["login"]["username"])
         except:
-            print(f"could not load username for id: {page['id']} ({page['name']})")
+            print(
+                f"could not load username for id: {page['id']} ({page['name']})")
 
         listbox1.append(row_username)
-
 
         # Password
         row_password = Adw.PasswordEntryRow(title="Password")
         try:
             row_password.set_text(page["login"]["password"])
         except:
-            print(f"could not load username for id: {page['id']} ({page['name']})")
+            print(
+                f"could not load username for id: {page['id']} ({page['name']})")
 
         listbox1.append(row_password)
 
@@ -74,6 +74,5 @@ class Login(Gtk.Widget):
         # except:
         #     print(f"could not load TOTP code for id: {page['id']} ({page['name']})")
         # listbox1.append(row_totp)
-
 
         return content

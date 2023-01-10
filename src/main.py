@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-
+from gi.repository import Gtk, Adw, GLib
 import gi
 import subprocess
 import json
@@ -20,7 +20,6 @@ from dotenv import load_dotenv
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib
 load_dotenv()
 
 
@@ -33,7 +32,8 @@ class AppWindow(Adw.ApplicationWindow):
 
     # BW Server thread
     def start_bw_server(self):
-        cmd = "***REMOVED***bw serve --port 8055 --session " + os.getenv("BW_SESSION")
+        cmd = "***REMOVED***bw serve --port 8055 --session " + \
+            os.getenv("BW_SESSION")
         os.system(cmd)
 
     # load the JSON data from the BW Server
@@ -107,9 +107,6 @@ class AppWindow(Adw.ApplicationWindow):
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
 
-            
-
-
             if (page["type"] == 1):
                 content = Login.init_ui(self, page)
                 self.clamp.set_child(content)
@@ -120,8 +117,6 @@ class AppWindow(Adw.ApplicationWindow):
                 print("credit card")
             if (page["type"] == 4):
                 print("ID")
-
-            
 
             # Sidebar items/names
             name = page["id"]
@@ -136,9 +131,6 @@ class AppWindow(Adw.ApplicationWindow):
 
         # display the content
         self.set_content(window)
-
-
-
 
 
 def on_activate(app):
