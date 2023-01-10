@@ -108,9 +108,11 @@ class AppWindow(Adw.ApplicationWindow):
             # scrollView.set_kinetic_scrolling(True)
 
             # clamp
+            adwbin = Adw.Bin()
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
+            adwbin.set_child(self.box_content)
             # scrollView.set_child(self.box_content)
 
 
@@ -135,7 +137,7 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_sidebar.add_titled(self.box_content, name, title)
+            stack_sidebar.add_titled(adwbin, name, title)
 
         self.leaflet_main.append(stack_sidebar)
 
