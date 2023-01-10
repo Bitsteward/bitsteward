@@ -34,7 +34,7 @@ class AppWindow(Adw.ApplicationWindow):
 
     # BW Server thread
     def start_bw_server(self):
-        cmd = "***REMOVED***bw serve --port 8055 --session " + \
+        cmd = "/home/adaoh/Téléchargements/bw-linux-2022.11.0/bw serve --port 8055 --session " + \
             os.getenv("BW_SESSION")
         os.system(cmd)
 

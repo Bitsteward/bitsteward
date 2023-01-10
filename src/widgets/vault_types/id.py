@@ -4,7 +4,7 @@
 from gi.repository import Gtk, Adw, GLib
 import gi
 
-
+from gi.repository import Pango
 from dotenv import load_dotenv
 
 gi.require_version('Gtk', '4.0')
@@ -27,12 +27,8 @@ class Id(Gtk.Widget):
 
 
         # label
-        title = page["name"]
-
-        if (len(title) > 30):
-            title = title[0:27] + "..."
-
-        vault_item_title = Gtk.Label(label=title)
+        vault_item_title = Gtk.Label(label=page["name"])
+        vault_item_title.set_ellipsize(Pango.EllipsizeMode.END)
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
