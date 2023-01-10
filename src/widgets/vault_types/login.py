@@ -3,14 +3,6 @@
 
 from gi.repository import Gtk, Adw, GLib
 import gi
-import subprocess
-import json
-import os
-import requests
-import daemon
-import time
-import threading
-import keyring
 
 
 from dotenv import load_dotenv
@@ -20,7 +12,7 @@ gi.require_version('Adw', '1')
 load_dotenv()
 
 
-class SecureNote(Gtk.Widget):
+class Login(Gtk.Widget):
     def init_ui(self, page):
 
         # content box
@@ -55,14 +47,14 @@ class SecureNote(Gtk.Widget):
 
         listbox1.append(row_username)
 
-        # # TOTP
-        # row_totp = Adw.ActionRow(
-        #     subtitle = "Verification code"
-        # )
-        # try:
-        #     row_totp.set_title(page["login"]["totp"])
-        # except:
-        #     print(f"could not load TOTP code for id: {page['id']} ({page['name']})")
-        # listbox1.append(row_totp)
+        # Password
+        row_password = Adw.PasswordEntryRow(title="Password")
+        try:
+            row_password.set_text(page["login"]["password"])
+        except:
+            print(
+                f"could not load username for id: {page['id']} ({page['name']})")
+
+        listbox1.append(row_password)
 
         return content

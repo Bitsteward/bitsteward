@@ -12,8 +12,8 @@ import time
 import threading
 import keyring
 
-from views.vault_types.secure_note import SecureNote
-from views.vault_types.login import Login
+from widgets.vault_types.secure_note import SecureNote
+from widgets.vault_types.login import Login
 
 
 from dotenv import load_dotenv
