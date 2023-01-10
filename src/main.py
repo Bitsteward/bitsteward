@@ -64,7 +64,7 @@ class AppWindow(Adw.ApplicationWindow):
     def init_ui(self):
         self.set_title('Bitsteward')
         self.set_default_size(450, 350)  # default app size
-        self.set_size_request(400, 300)  # minimum app size
+        self.set_size_request(200, 200)  # minimum app size
 
         # Main window
         window = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -103,11 +103,15 @@ class AppWindow(Adw.ApplicationWindow):
             # type 2 = standalone secure note
             # type 3 = credit card
             # type 4 = ID
+            scrollView = Gtk.ScrolledWindow()
+            scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
             # clamp
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
+            scrollView.set_child(self.box_content)
+
 
             if (page["type"] == 1):
                 content = Login.init_ui(self, page)
@@ -130,7 +134,7 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_sidebar.add_titled(self.box_content, name, title)
+            stack_sidebar.add_titled(scrollView, name, title)
 
         self.leaflet_main.append(stack_sidebar)
 
