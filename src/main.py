@@ -14,6 +14,8 @@ import keyring
 
 from widgets.vault_types.secure_note import SecureNote
 from widgets.vault_types.login import Login
+from widgets.vault_types.credit_card import CreditCard
+from widgets.vault_types.id import Id
 
 
 from dotenv import load_dotenv
@@ -114,7 +116,8 @@ class AppWindow(Adw.ApplicationWindow):
                 content = SecureNote.init_ui(self, page)
                 self.clamp.set_child(content)
             if (page["type"] == 3):
-                print("credit card")
+                content = CreditCard.init_ui(self, page)
+                self.clamp.set_child(content)
             if (page["type"] == 4):
                 print("ID")
 
