@@ -103,17 +103,19 @@ class AppWindow(Adw.ApplicationWindow):
             # type 2 = standalone secure note
             # type 3 = credit card
             # type 4 = ID
-            # scrollView = Gtk.ScrolledWindow()
-            # scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            # scrollView.set_kinetic_scrolling(True)
+            scrollView = Gtk.ScrolledWindow()
+            scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            scrollView.set_kinetic_scrolling(True)
 
             # clamp
             adwbin = Adw.Bin()
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
-            adwbin.set_child(self.box_content)
-            # scrollView.set_child(self.box_content)
+            
+            scrollView.set_child(self.box_content)
+
+            adwbin.set_child(scrollView)
 
 
             if (page["type"] == 1):
