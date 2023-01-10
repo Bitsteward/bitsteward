@@ -10,6 +10,10 @@ import requests
 import daemon
 import time
 import threading
+import keyring
+
+from views.vault_types.secure_note import SecureNote
+from views.vault_types.login import Login
 
 
 from dotenv import load_dotenv
@@ -93,60 +97,31 @@ class AppWindow(Adw.ApplicationWindow):
         # add elements to the stack
         for page in self.jsonOutput:
 
+            # type 1 = login
+            # type 2 = standalone secure note
+            # type 3 = credit card
+            # type 4 = ID
+
             # clamp
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
 
-            # content box
-            content = Gtk.Box(
-                spacing=10,
-                margin_start=20,
-                margin_end=20,
-                margin_top=20,
-                margin_bottom=20,
-                orientation=Gtk.Orientation.VERTICAL
-            )
-            self.clamp.set_child(content)
+            
 
-            # label
-            vault_item_title = Gtk.Label(label=page["name"])
-            vault_item_title.get_style_context().add_class('title-1')
-            content.append(vault_item_title)
 
-            # Username and password box
-            listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-            listbox1.get_style_context().add_class('boxed-list')
-            content.append(listbox1)
+            if (page["type"] == 1):
+                content = Login.init_ui(self, page)
+                self.clamp.set_child(content)
+            if (page["type"] == 2):
+                content = SecureNote.init_ui(self, page)
+                self.clamp.set_child(content)
+            if (page["type"] == 3):
+                print("credit card")
+            if (page["type"] == 4):
+                print("ID")
 
-            # Username
-            row_username = Adw.EntryRow(title="Username")
-
-            try:
-                row_username.set_text(page["login"]["username"])
-            except:
-                print(f"could not load username for id: {page['id']} ({page['name']})")
-
-            listbox1.append(row_username)
-
-            # Password
-            row_password = Adw.PasswordEntryRow(title="Password")
-            try:
-                row_password.set_text(page["login"]["password"])
-            except:
-                print(f"could not load password for id: {page['id']} ({page['name']})")
-
-            listbox1.append(row_password)
-
-            # # TOTP
-            # row_totp = Adw.ActionRow(
-            #     subtitle = "Verification code"
-            # )
-            # try:
-            #     row_totp.set_title(page["login"]["totp"])
-            # except:
-            #     print(f"could not load TOTP code for id: {page['id']} ({page['name']})")
-            # listbox1.append(row_totp)
+            
 
             # Sidebar items/names
             name = page["id"]
