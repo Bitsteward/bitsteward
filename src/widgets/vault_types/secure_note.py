@@ -26,7 +26,12 @@ class SecureNote(Gtk.Widget):
         self.clamp.set_child(content)
 
         # label
-        vault_item_title = Gtk.Label(label=page["name"])
+        title = page["name"]
+
+        if (len(title) > 30):
+            title = title[0:27] + "..."
+
+        vault_item_title = Gtk.Label(label=title)
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
