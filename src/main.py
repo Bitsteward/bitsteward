@@ -103,15 +103,15 @@ class AppWindow(Adw.ApplicationWindow):
             # type 2 = standalone secure note
             # type 3 = credit card
             # type 4 = ID
-            scrollView = Gtk.ScrolledWindow()
-            scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            scrollView.set_kinetic_scrolling(True)
+            # scrollView = Gtk.ScrolledWindow()
+            # scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            # scrollView.set_kinetic_scrolling(True)
 
             # clamp
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
-            scrollView.set_child(self.box_content)
+            # scrollView.set_child(self.box_content)
 
 
             if (page["type"] == 1):
@@ -135,7 +135,7 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_sidebar.add_titled(scrollView, name, title)
+            stack_sidebar.add_titled(self.box_content, name, title)
 
         self.leaflet_main.append(stack_sidebar)
 
