@@ -29,36 +29,45 @@ class AppWindow(Adw.ApplicationWindow):
 
     nombre = 0
     pages = []
-
     totp_code = ""
+    bw_server_pid = ""
 
-    # BW Server thread
-    def start_bw_server(self):
-        cmd = "./../bw serve --port 8055 --session " + os.getenv("BW_SESSION")
-        os.system(cmd)
+    hostname = "localhost"
+    port = "8055"
+
+
+    def on_destroy(self, widget, data=None):
+        self.bw_server_pid.terminate()
 
     # load the JSON data from the BW Server
     def load_json_data(self):
-        thread_bw_server = threading.Thread(target=self.start_bw_server)
-        thread_bw_server.daemon = True
-        thread_bw_server.start()
+        bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", "8055", "--session", os.getenv("BW_SESSION")])
 
-        time.sleep(0.5)
+        while True:
+            try:
+                response = requests.get(f"http://{self.hostname}:{self.port}/status")
+                if response.status_code == 200:
+                    requests.post(f"http://{self.hostname}:{self.port}/sync")
 
-        requests.post("http://localhost:8055/sync")
+                    cmdOutput = requests.get(f"http://{self.hostname}:{self.port}/list/object/items")
 
-        cmdOutput = requests.get("http://localhost:8055/list/object/items")
+                    jsonOutput = json.loads(cmdOutput.content)
+                    return jsonOutput["data"]["data"]
+            except:
+                time.sleep(0.1)
 
-        jsonOutput = json.loads(cmdOutput.content)
-        return jsonOutput["data"]["data"]
 
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
 
+        self.connect("destroy", self.on_destroy)
+
         self.jsonOutput = self.load_json_data()
 
         self.init_ui()
+
 
     def init_ui(self):
         self.set_title('Bitsteward')
@@ -149,7 +158,6 @@ class AppWindow(Adw.ApplicationWindow):
 
 
 def on_activate(app):
-
     win = AppWindow(app)
     win.present()
 
