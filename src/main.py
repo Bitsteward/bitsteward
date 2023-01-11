@@ -7,10 +7,7 @@ import subprocess
 import json
 import os
 import requests
-import daemon
 import time
-import threading
-import keyring
 
 from widgets.vault_types.secure_note import SecureNote
 from widgets.vault_types.login import Login
