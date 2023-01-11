@@ -155,7 +155,6 @@ class AppWindow(Adw.ApplicationWindow):
 
         # button to go back in folded view
         def on_back_btn_clicked(param):
-            print("lol")
             header_bar.remove(self.back_button)
             self.leaflet_main.set_visible_child(sidebar)
 
