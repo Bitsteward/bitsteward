@@ -35,28 +35,6 @@ class AppWindow(Adw.ApplicationWindow):
     hostname = "localhost"
     port = "8055"
 
-    def on_destroy(self, widget, data=None):
-        self.bw_server_pid.terminate()
-
-    # load the JSON data from the BW Server
-    def load_json_data(self):
-        bw_location = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
-
-        while True:
-            try:
-                response = requests.get(
-                    f"http://{self.hostname}:{self.port}/status")
-                if response.status_code == 200:
-                    requests.post(f"http://{self.hostname}:{self.port}/sync")
-
-                    cmdOutput = requests.get(f"http://{self.hostname}:{self.port}/list/object/items")
-
-                    jsonOutput = json.loads(cmdOutput.content)
-                    return jsonOutput["data"]["data"]
-            except:
-                time.sleep(0.1)
 
     def __init__(self, app):
 
@@ -79,8 +57,8 @@ class AppWindow(Adw.ApplicationWindow):
         window = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
         # Headerbar
-        header_bar = Gtk.HeaderBar()
-        window.append(header_bar)
+        self.header_bar = Gtk.HeaderBar()
+        window.append(self.header_bar)
 
         # Leaflet
         self.leaflet_main = Adw.Leaflet(
@@ -98,12 +76,12 @@ class AppWindow(Adw.ApplicationWindow):
         stack_sidebar.set_vexpand(True)
 
         # Sidebar
-        sidebar = Gtk.StackSidebar()
-        sidebar.set_stack(stack_sidebar)
-        sidebar.set_vexpand(True)
-        sidebar.set_size_request(200, 0)
+        self.sidebar = Gtk.StackSidebar()
+        self.sidebar.set_stack(stack_sidebar)
+        self.sidebar.set_vexpand(True)
+        self.sidebar.set_size_request(200, 0)
 
-        self.leaflet_main.append(sidebar)
+        self.leaflet_main.append(self.sidebar)
         self.leaflet_main.append(stack_sidebar)
 
         # add elements to the stack
@@ -153,24 +131,57 @@ class AppWindow(Adw.ApplicationWindow):
 
             stack_sidebar.add_titled(adwbin, name, title)
 
-        # button to go back in folded view
-        def on_back_btn_clicked(param):
-            header_bar.remove(self.back_button)
-            self.leaflet_main.set_visible_child(sidebar)
 
-        # handle the clicks to vault items
-        def on_stack_switch(stack, param_spec):
-            self.leaflet_main.set_visible_child(stack)
-
-            if (self.leaflet_main.get_folded() == True):
-                self.back_button = Gtk.Button(label="Back")
-                header_bar.pack_start(self.back_button)
-                self.back_button.connect("clicked", on_back_btn_clicked)
-
-        stack_sidebar.connect("notify::visible-child", on_stack_switch)
+        stack_sidebar.connect("notify::visible-child", self.on_stack_switch)
 
         # display the content
         self.set_content(window)
+
+
+
+        # load the JSON data from the BW Server
+    def load_json_data(self):
+        bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
+        
+
+        while True:
+            try:
+                response = requests.get(f"http://{self.hostname}:{self.port}/status")
+
+                if response.status_code == 200:
+
+                    requests.post(f"http://{self.hostname}:{self.port}/sync")
+                    cmdOutput = requests.get(f"http://{self.hostname}:{self.port}/list/object/items")
+
+                    jsonOutput = json.loads(cmdOutput.content)
+                    return jsonOutput["data"]["data"]
+            except:
+                time.sleep(0.1)
+
+
+
+    def on_destroy(self, widget, data=None):
+        self.bw_server_pid.terminate
+
+
+
+    # button to go back in folded view
+    def on_back_btn_clicked(self, param):
+        self.header_bar.remove(self.back_button)
+        self.leaflet_main.set_visible_child(self.sidebar)
+
+
+
+    # handle the clicks to vault items
+    def on_stack_switch(self, stack, param_spec):
+        self.leaflet_main.set_visible_child(stack)
+
+        if (self.leaflet_main.get_folded() == True):
+            self.back_button = Gtk.Button(label="Back")
+            self.header_bar.pack_start(self.back_button)
+            self.back_button.connect("clicked", self.on_back_btn_clicked)
+
 
 
 def on_activate(app):
