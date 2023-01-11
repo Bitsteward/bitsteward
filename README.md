@@ -5,6 +5,28 @@ Bitsteward is a very early alpha Bitwarden client made with GTK4 and Libadwaita.
 
 🚧 The readme is under construction! 🚧
 
+## How to run
+The first step is to clone the repo in a terminal
+```bash
+git clone https://github.com/Bitsteward/bitsteward.git
+cd bitsteward
+```
+Then, you need to login to a Bitwarden account (I recommend creating a new one to test this app as it is not yet secure)
+```bash
+chmod +x bw
+./bw login
+```
+Then fill in the steps to login as the prompt tells you.
+After that is done, install the python dependencies
+```
+pip install -r requirements.txt
+```
+The last step is to start the application!
+```
+python3 src/main.py
+```
+
+
 <details>
     <summary><h2>Screenshots</h2></summary>
     
