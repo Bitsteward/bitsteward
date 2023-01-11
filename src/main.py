@@ -35,18 +35,19 @@ class AppWindow(Adw.ApplicationWindow):
     hostname = "localhost"
     port = "8055"
 
-
     def on_destroy(self, widget, data=None):
         self.bw_server_pid.terminate()
 
     # load the JSON data from the BW Server
     def load_json_data(self):
-        bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", "8055", "--session", os.getenv("BW_SESSION")])
+        bw_location = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
 
         while True:
             try:
-                response = requests.get(f"http://{self.hostname}:{self.port}/status")
+                response = requests.get(
+                    f"http://{self.hostname}:{self.port}/status")
                 if response.status_code == 200:
                     requests.post(f"http://{self.hostname}:{self.port}/sync")
 
@@ -56,7 +57,6 @@ class AppWindow(Adw.ApplicationWindow):
                     return jsonOutput["data"]["data"]
             except:
                 time.sleep(0.1)
-
 
     def __init__(self, app):
 
@@ -68,12 +68,12 @@ class AppWindow(Adw.ApplicationWindow):
 
         self.init_ui()
 
-
     def init_ui(self):
         self.set_title('Bitsteward')
         self.set_default_size(800, 550)  # default app size
         self.set_size_request(300, 200)  # minimum app size
-        self.get_style_context().add_class('devel') # add devel stripes to the headerbar
+        # add devel stripes to the headerbar
+        self.get_style_context().add_class('devel')
 
         # Main window
         window = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -81,7 +81,6 @@ class AppWindow(Adw.ApplicationWindow):
         # Headerbar
         header_bar = Gtk.HeaderBar()
         window.append(header_bar)
-        
 
         # Leaflet
         self.leaflet_main = Adw.Leaflet(
@@ -105,6 +104,7 @@ class AppWindow(Adw.ApplicationWindow):
         sidebar.set_size_request(200, 0)
 
         self.leaflet_main.append(sidebar)
+        self.leaflet_main.append(stack_sidebar)
 
         # add elements to the stack
         for page in self.jsonOutput:
@@ -114,7 +114,10 @@ class AppWindow(Adw.ApplicationWindow):
             # type 3 = credit card
             # type 4 = ID
             scrollView = Gtk.ScrolledWindow()
-            scrollView.set_policy (Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+            scrollView.set_policy(
+                Gtk.PolicyType.NEVER,
+                Gtk.PolicyType.AUTOMATIC
+            )
             scrollView.set_kinetic_scrolling(True)
 
             # clamp
@@ -122,11 +125,10 @@ class AppWindow(Adw.ApplicationWindow):
             self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
-            
+
             scrollView.set_child(self.box_content)
 
             adwbin.set_child(scrollView)
-
 
             if (page["type"] == 1):
                 content = Login.init_ui(self, page)
@@ -139,7 +141,7 @@ class AppWindow(Adw.ApplicationWindow):
 
             if (page["type"] == 4):
                 content = Id.init_ui(self, page)
-                
+
             self.clamp.set_child(content)
 
             # Sidebar items/names
@@ -151,7 +153,21 @@ class AppWindow(Adw.ApplicationWindow):
 
             stack_sidebar.add_titled(adwbin, name, title)
 
-        self.leaflet_main.append(stack_sidebar)
+        # button to go back in folded view
+        def on_back_btn_clicked(param):
+            header_bar.remove(self.back_button)
+            self.leaflet_main.set_visible_child(sidebar)
+
+        # handle the clicks to vault items
+        def on_stack_switch(stack, param_spec):
+            self.leaflet_main.set_visible_child(stack)
+
+            if (self.leaflet_main.get_folded() == True):
+                self.back_button = Gtk.Button(label="Back")
+                header_bar.pack_start(self.back_button)
+                self.back_button.connect("clicked", on_back_btn_clicked)
+
+        stack_sidebar.connect("notify::visible-child", on_stack_switch)
 
         # display the content
         self.set_content(window)
