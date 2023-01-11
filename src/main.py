@@ -35,8 +35,6 @@ class AppWindow(Adw.ApplicationWindow):
     hostname = "localhost"
     port = "8055"
 
-    port = "8033"
-
     def on_destroy(self, widget, data=None):
         self.bw_server_pid.terminate()
 
