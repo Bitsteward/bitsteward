@@ -71,8 +71,8 @@ class AppWindow(Adw.ApplicationWindow):
 
     def init_ui(self):
         self.set_title('Bitsteward')
-        self.set_default_size(450, 350)  # default app size
-        self.set_size_request(200, 200)  # minimum app size
+        self.set_default_size(800, 550)  # default app size
+        self.set_size_request(300, 200)  # minimum app size
         self.get_style_context().add_class('devel') # add devel stripes to the headerbar
 
         # Main window
