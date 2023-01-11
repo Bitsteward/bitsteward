@@ -17,6 +17,17 @@ chmod +x bw
 ./bw login
 ```
 Then fill in the steps to login as the prompt tells you.
+Then you will need to copy the Session ID that bw gives you when the login is successful.
+After that, modify the following command to replace {session id} including the brackets with the copied session ID
+```
+echo 'BW_SESSION="{session id}"' >> .env
+```
+<details>
+    <summary><b>Here is an example of what the command should look like</b></summary>
+    
+    echo 'BW_SESSION="vdXQ7mRYtcFXueH/Ml+ZgvK//V+0cTJpuAVddMwttNEvVHU6d6xaaRdYokv/9Jqw1uofMq82/B3y/MpV2Yh3Qg=="' >> .env
+</details>
+
 After that is done, install the python dependencies
 ```
 pip install -r requirements.txt
