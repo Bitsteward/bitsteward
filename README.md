@@ -40,8 +40,11 @@ python3 src/main.py
 
 <details>
     <summary><h2>Screenshots</h2></summary>
-    
-![Alt text](/screenshots/full-light-1.png?raw=true "App with two columns in light theme")
-![Alt text](/screenshots/full-dark-1.png?raw=true "App with two columns in dark theme")
-![Alt text](/screenshots/mobile-light-1.png?raw=true "App with one column (mobile view) in dark theme")
+
+<picture>
+  <source srcset="/screenshots/full-dark-1.png?raw=true" media="(prefers-color-scheme: dark)">
+  <img src="/screenshots/full-light-1.png?raw=true" title="App with two columns" alt="screenshot-desktop">
+</picture>
+
+![screenshot-mobile](/screenshots/mobile-light-1.png?raw=true "App with one column (mobile view)")
 </details>
