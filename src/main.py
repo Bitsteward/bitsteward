@@ -8,6 +8,7 @@ import json
 import os
 import requests
 import time
+import requests_unixsocket
 
 from widgets.vault_types.secure_note import SecureNote
 from widgets.vault_types.login import Login
@@ -139,17 +140,19 @@ class AppWindow(Adw.ApplicationWindow):
         # load the JSON data from the BW Server
     def load_json_data(self):
         bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
-        
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "—port", "./socket.sock", "—hostname", "''"])
+        # self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
+        session = requests_unixsocket.Session()
 
         while True:
             try:
-                response = requests.get(f"http://{self.hostname}:{self.port}/status")
+                # response = requests.get(f"http://{self.hostname}:{self.port}/status")
+                response = session.get(f"http://{self.hostname}:{self.port}/status")
 
                 if response.status_code == 200:
 
-                    requests.post(f"http://{self.hostname}:{self.port}/sync")
-                    cmdOutput = requests.get(f"http://{self.hostname}:{self.port}/list/object/items")
+                    session.post(f"http://{self.hostname}:{self.port}/sync")
+                    cmdOutput = session.get(f"http://{self.hostname}:{self.port}/list/object/items")
 
                     jsonOutput = json.loads(cmdOutput.content)
                     return jsonOutput["data"]["data"]
