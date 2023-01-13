@@ -1,0 +1,24 @@
+app-id: net.adaoh.Bitsteward
+runtime: org.freedesktop.Platform
+runtime-version: '22.08'
+sdk: org.freedesktop.Sdk
+command: python3 src/main.py
+modules:
+  - python3-requirements.json
+  - name: bitsteward
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-use-pep517 --prefix=/app .
+    sources:
+      - type: file
+        path: src/widgets/vault_types/credit_card.py
+      - type: file
+        path: src/widgets/vault_types/id.py
+      - type: file
+        path: src/widgets/vault_types/login.py
+      - type: file
+        path: src/widgets/vault_types/secure_note.py
+      - type: file
+        path: ./src/main.py
+      - type: file
+        path: ./bw
