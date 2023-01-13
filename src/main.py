@@ -30,8 +30,8 @@ class AppWindow(Adw.ApplicationWindow):
     totp_code = ""
     bw_server_pid = ""
 
-    hostname = "localhost"
-    port = "8055"
+    hostname = ""
+    port = "./bw.sock"
 
 
     def __init__(self, app):
@@ -140,16 +140,17 @@ class AppWindow(Adw.ApplicationWindow):
         # load the JSON data from the BW Server
     def load_json_data(self):
         bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "—port", "./socket.sock", "—hostname", "''"])
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "—port", "./bw.sock", "—hostname", '', "--session", os.getenv("BW_SESSION")])
         # self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
         session = requests_unixsocket.Session()
 
         while True:
             try:
                 # response = requests.get(f"http://{self.hostname}:{self.port}/status")
-                response = session.get(f"http://{self.hostname}:{self.port}/status")
+                response = session.get(f"http+unix://{self.hostname}:{self.port}/status")
 
                 if response.status_code == 200:
+                    print("hello")
 
                     session.post(f"http://{self.hostname}:{self.port}/sync")
                     cmdOutput = session.get(f"http://{self.hostname}:{self.port}/list/object/items")
