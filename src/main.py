@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
 
-from gi.repository import Gtk, Adw, GLib
 import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw, GLib
+
 import subprocess
 import json
 import os
@@ -14,11 +17,7 @@ from widgets.vault_types.login import Login
 from widgets.vault_types.credit_card import CreditCard
 from widgets.vault_types.id import Id
 
-
 from dotenv import load_dotenv
-
-gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
 load_dotenv()
 
 
