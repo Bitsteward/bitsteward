@@ -45,6 +45,9 @@ python3 src/main.py
   <source srcset="/screenshots/full-dark-1.png?raw=true" media="(prefers-color-scheme: dark)">
   <img src="/screenshots/full-light-1.png?raw=true" title="App with two columns" alt="screenshot-desktop">
 </picture>
-
-![screenshot-mobile](/screenshots/mobile-light-1.png?raw=true "App with one column (mobile view)")
+    
+<picture>
+  <source srcset="/screenshots/mobile-dark-1.png?raw=true" media="(prefers-color-scheme: dark)">
+  <img src="/screenshots/mobile-light-1.png?raw=true" title="App with two columns" alt="screenshot-desktop">
+</picture>
 </details>
