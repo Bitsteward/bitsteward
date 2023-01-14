@@ -6,12 +6,6 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, GLib
 
-import subprocess
-import json
-import os
-import requests
-import time
-
 from widgets.vault_types.secure_note import SecureNote
 from widgets.vault_types.login import Login
 from widgets.vault_types.credit_card import CreditCard
@@ -59,6 +53,59 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.set_can_navigate_back(True)
         window.append(self.leaflet_main)  # add the content to the main window
 
+
+        # Sidebar Leaflet (for the double folder view)
+        self.leaflet_sidebar = Adw.Leaflet(
+            halign=Gtk.Align.FILL,
+            valign=Gtk.Align.FILL
+        )
+        self.leaflet_sidebar.set_can_unfold(False)
+        self.leaflet_sidebar.set_can_navigate_back(True)
+        self.leaflet_main.append(self.leaflet_sidebar)  # add the content to the main window
+
+
+        #create the stack for the folders
+        stack_sidebar_folder = Gtk.Stack()
+        stack_sidebar_folder.set_hexpand(True)
+        stack_sidebar_folder.set_vexpand(True)
+        
+        # Sidebar
+        sidebar = Gtk.StackSidebar()
+
+        vault_folders = Server.get_vault_folders()
+
+        for folder in vault_folders:
+
+            sidebar.set_stack(stack_sidebar_folder)
+            sidebar.set_vexpand(True)
+
+            # Sidebar items/names
+            name = folder["id"]
+            title = folder["name"]
+
+            if (len(title) > 30):
+                title = title[0:27] + "..."
+
+            stack_items = self.load_vault_items(folder["id"])
+            
+
+            stack_sidebar_folder.add_titled(stack_items, name, title)
+
+            stack_items = stack_items.get_stack
+            
+            # self.leaflet_main.append(stack_items)
+
+        stack_sidebar_folder.connect("notify::visible-child", self.on_stack_switch)        
+        
+        self.leaflet_sidebar.append(sidebar)
+        self.leaflet_sidebar.append(stack_sidebar_folder)
+       
+
+        # display the content
+        self.set_content(window)
+
+
+    def load_vault_items(self, folder_id):
         ### SideBar ###
         # Stack
         stack_sidebar = Gtk.Stack()
@@ -71,7 +118,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.sidebar.set_vexpand(True)
         self.sidebar.set_size_request(200, 0)
 
-        self.leaflet_main.append(self.sidebar)
+        # self.leaflet_main.append(self.sidebar)
         self.leaflet_main.append(stack_sidebar)
 
 
@@ -122,20 +169,14 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_sidebar.add_titled(adwbin, name, title)
+            if (page["folderId"] == folder_id):
+                stack_sidebar.add_titled(adwbin, name, title)
 
-
-        stack_sidebar.connect("notify::visible-child", self.on_stack_switch)
-
-        # display the content
-        self.set_content(window)
-
-
-
+        return self.sidebar
+            
 
     def on_destroy(self, widget, data=None):
         self.bw_server_pid.terminate
-
 
 
     # button to go back in folded view
@@ -147,9 +188,9 @@ class AppWindow(Adw.ApplicationWindow):
 
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
-        self.leaflet_main.set_visible_child(stack)
+        self.leaflet_sidebar.set_visible_child(stack)
 
-        if (self.leaflet_main.get_folded() == True):
+        if (self.leaflet_sidebar.get_folded() == True):
             self.back_button = Gtk.Button(label="Back")
             self.header_bar.pack_start(self.back_button)
             self.back_button.connect("clicked", self.on_back_btn_clicked)
