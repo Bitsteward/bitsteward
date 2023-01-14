@@ -28,7 +28,6 @@ class AppWindow(Adw.ApplicationWindow):
     pages = []
     totp_code = ""
 
-
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
@@ -76,7 +75,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.append(stack_sidebar)
 
 
-        vault_items = Server.get_vault_items("localhost", "8055")
+        vault_items = Server.get_vault_items()
 
         # add elements to the stack
         for page in vault_items:

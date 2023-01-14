@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+hostname = "localhost"
+port = "8055"
 
 class Server():
 
@@ -23,23 +25,23 @@ class Server():
     # load the JSON data from the BW Server
     def load_json_data(self):
         bw_location = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
+        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", port, "--session", os.getenv("BW_SESSION")])
         
 
         while True:
             try:
-                requests.get(f"http://{self.hostname}:{self.port}/status")
+                requests.get(f"http://{hostname}:{port}/status")
             except:
                 time.sleep(0.1)
 
-    def get_vault_items(hostname, port):
+    def get_vault_items():
         requests.post(f"http://{hostname}:{port}/sync")
         cmdOutput = requests.get(f"http://{hostname}:{port}/list/object/items")
 
         jsonOutput = json.loads(cmdOutput.content)
         return jsonOutput["data"]["data"]
 
-    def get_vault_folders(hostname, port):
+    def get_vault_folders():
         requests.post(f"http://{hostname}:{port}/sync")
         cmdOutput = requests.get(f"http://{hostname}:{port}/list/object/folders")
 
