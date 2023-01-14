@@ -16,6 +16,7 @@ from widgets.vault_types.secure_note import SecureNote
 from widgets.vault_types.login import Login
 from widgets.vault_types.credit_card import CreditCard
 from widgets.vault_types.id import Id
+from utility.server_requests import Server
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -26,10 +27,6 @@ class AppWindow(Adw.ApplicationWindow):
     nombre = 0
     pages = []
     totp_code = ""
-    bw_server_pid = ""
-
-    hostname = "localhost"
-    port = "8055"
 
 
     def __init__(self, app):
@@ -37,8 +34,6 @@ class AppWindow(Adw.ApplicationWindow):
         super(AppWindow, self).__init__(application=app)
 
         self.connect("destroy", self.on_destroy)
-
-        self.jsonOutput = self.load_json_data()
 
         self.init_ui()
 
@@ -80,8 +75,11 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.append(self.sidebar)
         self.leaflet_main.append(stack_sidebar)
 
+
+        vault_items = Server.get_vault_items("localhost", "8055")
+
         # add elements to the stack
-        for page in self.jsonOutput:
+        for page in vault_items:
 
             # type 1 = login
             # type 2 = standalone secure note
@@ -133,27 +131,6 @@ class AppWindow(Adw.ApplicationWindow):
         # display the content
         self.set_content(window)
 
-
-
-        # load the JSON data from the BW Server
-    def load_json_data(self):
-        bw_location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", self.port, "--session", os.getenv("BW_SESSION")])
-        
-
-        while True:
-            try:
-                response = requests.get(f"http://{self.hostname}:{self.port}/status")
-
-                if response.status_code == 200:
-
-                    requests.post(f"http://{self.hostname}:{self.port}/sync")
-                    cmdOutput = requests.get(f"http://{self.hostname}:{self.port}/list/object/items")
-
-                    jsonOutput = json.loads(cmdOutput.content)
-                    return jsonOutput["data"]["data"]
-            except:
-                time.sleep(0.1)
 
 
 
