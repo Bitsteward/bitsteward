@@ -48,6 +48,6 @@ python3 src/main.py
     
 <picture>
   <source srcset="/screenshots/mobile-dark-1.png?raw=true" media="(prefers-color-scheme: dark)">
-  <img src="/screenshots/mobile-light-1.png?raw=true" title="App with two columns" alt="screenshot-desktop">
+  <img src="/screenshots/mobile-light-1.png?raw=true" title="App with one column (mobile view)" alt="screenshot-mobile">
 </picture>
 </details>
