@@ -86,8 +86,7 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_items = self.load_vault_items(folder["id"])
-            
+            stack_items = self.load_vault_items(folder["id"])          
 
             stack_sidebar_folder.add_titled(stack_items, name, title)
 
@@ -147,29 +146,30 @@ class AppWindow(Adw.ApplicationWindow):
             scrollView.set_child(self.box_content)
 
             adwbin.set_child(scrollView)
-
-            if (page["type"] == 1):
-                content = Login.init_ui(self, page)
-
-            if (page["type"] == 2):
-                content = SecureNote.init_ui(self, page)
-
-            if (page["type"] == 3):
-                content = CreditCard.init_ui(self, page)
-
-            if (page["type"] == 4):
-                content = Id.init_ui(self, page)
-
-            self.clamp.set_child(content)
-
-            # Sidebar items/names
-            name = page["id"]
-            title = page["name"]
-
-            if (len(title) > 30):
-                title = title[0:27] + "..."
-
             if (page["folderId"] == folder_id):
+
+                if (page["type"] == 1):
+                    content = Login.init_ui(self, page)
+
+                if (page["type"] == 2):
+                    content = SecureNote.init_ui(self, page)
+
+                if (page["type"] == 3):
+                    content = CreditCard.init_ui(self, page)
+
+                if (page["type"] == 4):
+                    content = Id.init_ui(self, page)
+
+                self.clamp.set_child(content)
+
+                # Sidebar items/names
+                name = page["id"]
+                title = page["name"]
+
+                if (len(title) > 30):
+                    title = title[0:27] + "..."
+
+                
                 stack_sidebar.add_titled(adwbin, name, title)
 
         return self.sidebar
