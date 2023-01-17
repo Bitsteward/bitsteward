@@ -68,18 +68,18 @@ class AppWindow(Adw.ApplicationWindow):
 
 
         #create the stack for the folders
-        stack_sidebar_folder = Gtk.Stack()
-        stack_sidebar_folder.set_hexpand(True)
-        stack_sidebar_folder.set_vexpand(True)
+        self.stack_sidebar_folder = Gtk.Stack()
         
         # Sidebar
         sidebar = Gtk.StackSidebar()
 
         vault_folders = Server.get_vault_folders()
 
+        stack_items = Gtk.Stack()
+
         for folder in vault_folders:
 
-            sidebar.set_stack(stack_sidebar_folder)
+            sidebar.set_stack(self.stack_sidebar_folder)
             sidebar.set_vexpand(True)
 
             # Sidebar items/names
@@ -89,18 +89,24 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_items = self.load_vault_items(folder["id"])          
+            stack_items = self.load_vault_items(folder["id"])
 
-            stack_sidebar_folder.add_titled(stack_items, name, title)
+            self.stack_sidebar_folder.add_titled(stack_items, name, title)
 
-            stack_items = stack_items.get_stack
-            
-            # self.leaflet_main.append(stack_items)
+            stack_items = stack_items.get_stack()
 
-        stack_sidebar_folder.connect("notify::visible-child", self.on_stack_switch)        
+
+
+        self.active_folder_stack = Gtk.Stack()
+
+        self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
+        stack_items.connect("notify::visible-child", self.on_stack_switch)
+
+        # self.leaflet_main.append(self.active_folder_stack)
+        self.leaflet_main.append(stack_items)
         
         self.leaflet_sidebar.append(sidebar)
-        self.leaflet_sidebar.append(stack_sidebar_folder)
+        self.leaflet_sidebar.append(self.stack_sidebar_folder)
        
 
         # display the content
@@ -121,7 +127,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.sidebar.set_size_request(200, 0)
 
         # self.leaflet_main.append(self.sidebar)
-        self.leaflet_main.append(stack_sidebar)
+        # self.leaflet_main.append(stack_sidebar)
 
 
         vault_items = Server.get_vault_items()
@@ -188,16 +194,20 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.set_visible_child(self.sidebar)
 
 
-
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
-        self.leaflet_sidebar.set_visible_child(stack)
+        self.leaflet_main.set_visible_child(stack)
 
         if (self.leaflet_sidebar.get_folded() == True):
             self.back_button = Gtk.Button(label="Back")
             self.header_bar.pack_start(self.back_button)
             self.back_button.connect("clicked", self.on_back_btn_clicked)
 
+
+    # returns the stack of the active (selected) vault folder
+    def on_folder_switch(self, stack, param_spec):
+        self.leaflet_sidebar.set_visible_child(stack)
+        # self.active_folder_stack = stack
 
 
 def on_activate(app):
