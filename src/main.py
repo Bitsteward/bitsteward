@@ -21,10 +21,13 @@ class AppWindow(Adw.ApplicationWindow):
     nombre = 0
     pages = []
     totp_code = ""
+    bw_server_pid = ""
 
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
+
+        self.bw_server_pid = Server.load_json_data()
 
         self.connect("destroy", self.on_destroy)
 

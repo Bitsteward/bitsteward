@@ -23,14 +23,15 @@ class Server():
         self.load_json_data
 
     # load the JSON data from the BW Server
-    def load_json_data(self):
+    def load_json_data():
         bw_location = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", port, "--session", os.getenv("BW_SESSION")])
+        bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", port, "--session", os.getenv("BW_SESSION")])
         
 
         while True:
             try:
                 requests.get(f"http://{hostname}:{port}/status")
+                return bw_server_pid
             except:
                 time.sleep(0.1)
 
