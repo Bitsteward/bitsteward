@@ -67,37 +67,6 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_sidebar.set_can_navigate_back(True)
         self.leaflet_main.append(self.leaflet_sidebar)  # add the content to the main window
 
-
-        #create the stack for the folders
-        self.stack_sidebar_folder = Gtk.Stack()
-        
-        # Sidebar
-        sidebar = Gtk.StackSidebar()
-
-        vault_folders = Server.get_vault_folders()
-
-        stack_items = Gtk.Stack()
-
-        for folder in vault_folders:
-
-            sidebar.set_stack(self.stack_sidebar_folder)
-            sidebar.set_vexpand(True)
-
-            # Sidebar items/names
-            name = folder["id"]
-            title = folder["name"]
-
-            if (len(title) > 30):
-                title = title[0:27] + "..."
-
-            stack_items = self.load_vault_items(folder["id"])
-
-            self.stack_sidebar_folder.add_titled(stack_items, name, title)
-
-            stack_items = stack_items.get_stack()
-
-        self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
-
         self.status_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
             hexpand= True,
@@ -110,14 +79,14 @@ class AppWindow(Adw.ApplicationWindow):
         )
         status_widget.set_title("Bitsteward")
         status_widget.set_description("You need to select an item.")
+
+        self.load_vault_folders()
         
         self.status_box.append(status_widget)
 
         self.leaflet_main.append(self.status_box)
         
-        # Sidebar
-        self.leaflet_sidebar.append(sidebar)
-        self.leaflet_sidebar.append(self.stack_sidebar_folder)
+
 
         # display the content
         self.set_content(window)
@@ -148,8 +117,6 @@ class AppWindow(Adw.ApplicationWindow):
             # type 2 = standalone secure note
             # type 3 = credit card
             # type 4 = ID
-
-
 
             # clamp
             adwbin = Adw.Bin()
@@ -184,7 +151,41 @@ class AppWindow(Adw.ApplicationWindow):
                 stack_sidebar.add_titled(self.box_content, name, title)
 
         return self.sidebar
-            
+
+    def load_vault_folders(self):
+        #create the stack for the folders
+        self.stack_sidebar_folder = Gtk.Stack()
+        
+        # Sidebar
+        sidebar = Gtk.StackSidebar()
+
+        vault_folders = Server.get_vault_folders()
+
+        # stack_items = Gtk.Stack()
+
+        for folder in vault_folders:
+
+            sidebar.set_stack(self.stack_sidebar_folder)
+            sidebar.set_vexpand(True)
+
+            # Sidebar items/names
+            name = folder["id"]
+            title = folder["name"]
+
+            if (len(title) > 30):
+                title = title[0:27] + "..."
+
+            # stack_items = self.load_vault_items(folder["id"])
+
+            self.stack_sidebar_folder.add_titled(Gtk.Box(), name, title)
+
+            # stack_items = stack_items.get_stack()
+
+        self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
+
+        # Sidebar
+        self.leaflet_sidebar.append(sidebar)
+        self.leaflet_sidebar.append(self.stack_sidebar_folder)
 
     def on_destroy(self, widget, data=None):
         self.bw_server_pid.terminate
