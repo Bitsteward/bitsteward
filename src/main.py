@@ -22,6 +22,7 @@ class AppWindow(Adw.ApplicationWindow):
     pages = []
     totp_code = ""
     bw_server_pid = ""
+    active_folder_stack = Gtk.Stack()
 
     def __init__(self, app):
 
@@ -77,6 +78,8 @@ class AppWindow(Adw.ApplicationWindow):
 
         stack_items = Gtk.Stack()
 
+
+
         for folder in vault_folders:
 
             sidebar.set_stack(self.stack_sidebar_folder)
@@ -95,19 +98,11 @@ class AppWindow(Adw.ApplicationWindow):
 
             stack_items = stack_items.get_stack()
 
-
-
-        self.active_folder_stack = Gtk.Stack()
-
         self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
-        stack_items.connect("notify::visible-child", self.on_stack_switch)
-
-        # self.leaflet_main.append(self.active_folder_stack)
-        self.leaflet_main.append(stack_items)
         
+        # Sidebar
         self.leaflet_sidebar.append(sidebar)
         self.leaflet_sidebar.append(self.stack_sidebar_folder)
-       
 
         # display the content
         self.set_content(window)
@@ -129,7 +124,6 @@ class AppWindow(Adw.ApplicationWindow):
         # self.leaflet_main.append(self.sidebar)
         # self.leaflet_main.append(stack_sidebar)
 
-
         vault_items = Server.get_vault_items()
 
         # add elements to the stack
@@ -139,6 +133,7 @@ class AppWindow(Adw.ApplicationWindow):
             # type 2 = standalone secure note
             # type 3 = credit card
             # type 4 = ID
+
             scrollView = Gtk.ScrolledWindow()
             scrollView.set_policy(
                 Gtk.PolicyType.NEVER,
@@ -177,7 +172,6 @@ class AppWindow(Adw.ApplicationWindow):
 
                 if (len(title) > 30):
                     title = title[0:27] + "..."
-
                 
                 stack_sidebar.add_titled(adwbin, name, title)
 
@@ -197,6 +191,7 @@ class AppWindow(Adw.ApplicationWindow):
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
         self.leaflet_main.set_visible_child(stack)
+        self.leaflet_main.append(self.active_folder_stack)
 
         if (self.leaflet_sidebar.get_folded() == True):
             self.back_button = Gtk.Button(label="Back")
@@ -206,8 +201,10 @@ class AppWindow(Adw.ApplicationWindow):
 
     # returns the stack of the active (selected) vault folder
     def on_folder_switch(self, stack, param_spec):
+        self.leaflet_main.remove(self.active_folder_stack)
         self.leaflet_sidebar.set_visible_child(stack)
-        # self.active_folder_stack = stack
+        self.active_folder_stack = stack.get_visible_child().get_stack()
+        self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
 
 
 def on_activate(app):
