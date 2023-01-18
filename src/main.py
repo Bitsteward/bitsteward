@@ -149,12 +149,7 @@ class AppWindow(Adw.ApplicationWindow):
             # type 3 = credit card
             # type 4 = ID
 
-            scrollView = Gtk.ScrolledWindow()
-            scrollView.set_policy(
-                Gtk.PolicyType.NEVER,
-                Gtk.PolicyType.AUTOMATIC
-            )
-            scrollView.set_kinetic_scrolling(True)
+
 
             # clamp
             adwbin = Adw.Bin()

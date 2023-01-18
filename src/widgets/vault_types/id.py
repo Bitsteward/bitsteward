@@ -15,6 +15,13 @@ load_dotenv()
 class Id(Gtk.Widget):
     def init_ui(self, page):
 
+        scrollView = Gtk.ScrolledWindow()
+        scrollView.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC
+        )
+        scrollView.set_kinetic_scrolling(True)
+
         # content box
         content = Gtk.Box(
             spacing=10,
@@ -25,6 +32,7 @@ class Id(Gtk.Widget):
             orientation=Gtk.Orientation.VERTICAL
         )
 
+        scrollView.set_child(content)
 
         # label
         vault_item_title = Gtk.Label(label=page["name"])
@@ -183,4 +191,4 @@ class Id(Gtk.Widget):
         contact_info.append(row_email)
 
 
-        return content
+        return scrollView
