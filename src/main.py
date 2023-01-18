@@ -98,10 +98,22 @@ class AppWindow(Adw.ApplicationWindow):
 
         self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
 
-        self.status_page = Gtk.Box()
-        self.status_page.append(Gtk.Label(label="hello world this is future status page!!!"))
+        self.status_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            hexpand= True,
+            vexpand = True
+        )
+        status_widget = Adw.StatusPage(
+            icon_name = 'dialog-password-symbolic',
+            valign = Gtk.Align.CENTER,
+            vexpand = True
+        )
+        status_widget.set_title("Bitsteward")
+        status_widget.set_description("You need to select an item.")
+        
+        self.status_box.append(status_widget)
 
-        self.leaflet_main.append(self.status_page)
+        self.leaflet_main.append(self.status_box)
         
         # Sidebar
         self.leaflet_sidebar.append(sidebar)
@@ -194,7 +206,7 @@ class AppWindow(Adw.ApplicationWindow):
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
         # remove the old vault item content from the right pane
-        self.leaflet_main.remove(self.status_page)
+        self.leaflet_main.remove(self.status_box)
         self.leaflet_main.set_visible_child(stack)
         self.leaflet_main.append(self.active_folder_stack)
 
@@ -206,7 +218,7 @@ class AppWindow(Adw.ApplicationWindow):
     # returns the stack of the active (selected) vault folder
     def on_folder_switch(self, stack, param_spec):
         self.leaflet_main.remove(self.active_folder_stack)
-        self.leaflet_main.append(self.status_page)
+        self.leaflet_main.append(self.status_box)
         self.leaflet_sidebar.set_visible_child(stack)
         self.active_folder_stack = stack.get_visible_child().get_stack()
         self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
