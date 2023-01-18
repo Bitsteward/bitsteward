@@ -212,7 +212,7 @@ class AppWindow(Adw.ApplicationWindow):
         
 
         if (self.leaflet_main.get_folded() == True):
-            self.back_button = Gtk.Button(label="Back")
+            self.back_button = Gtk.Button(icon_name="go-previous-symbolic")
             self.header_bar.pack_start(self.back_button)
             self.back_button.connect("clicked", self.on_back_btn_clicked)
 
