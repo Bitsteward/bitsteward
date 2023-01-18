@@ -127,21 +127,6 @@ class AppWindow(Adw.ApplicationWindow):
             adwbin.set_child(self.box_content)
             if (page["folderId"] == folder_id):
 
-                # if (page["type"] == 1):
-                #     content = Login.init_ui(self, page)
-
-                # if (page["type"] == 2):
-                #     content = SecureNote.init_ui(self, page)
-
-                # if (page["type"] == 3):
-                #     content = CreditCard.init_ui(self, page)
-
-                # if (page["type"] == 4):
-                #     content = Id.init_ui(self, page)
-
-                # self.clamp.set_child(content)
-
-                # Sidebar items/names
                 name = page["id"]
                 title = page["name"]
 
@@ -203,27 +188,20 @@ class AppWindow(Adw.ApplicationWindow):
 
         if (page["type"] == 1):
             content = Login.init_ui(self, page)
-            # content = Gtk.Label(label="login")
 
         if (page["type"] == 2):
             content = SecureNote.init_ui(self, page)
-            # content = Gtk.Label(label="secure note")
 
         if (page["type"] == 3):
             content = CreditCard.init_ui(self, page)
-            # content = Gtk.Label(label="credit card")
 
         if (page["type"] == 4):
             content = Id.init_ui(self, page)
-            # content = Gtk.Label(label="ID")
-
-        # print(content)
 
         # remove the old vault item content from the right pane
         self.leaflet_main.remove(self.status_box)
         self.leaflet_main.append(content)
         self.leaflet_main.set_visible_child(content)
-        
 
         if (self.leaflet_main.get_folded() == True):
             self.back_button = Gtk.Button(icon_name="go-previous-symbolic")
