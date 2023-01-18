@@ -48,3 +48,10 @@ class Server():
 
         jsonOutput = json.loads(cmdOutput.content)
         return jsonOutput["data"]["data"]
+
+    def get_item_by_id(id):
+        requests.post(f"http://{hostname}:{port}/sync")
+        cmdOutput = requests.get(f"http://{hostname}:{port}/object/item/{id}")
+        
+        jsonOutput = json.loads(cmdOutput.content)
+        return jsonOutput["data"]

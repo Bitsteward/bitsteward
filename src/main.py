@@ -157,24 +157,22 @@ class AppWindow(Adw.ApplicationWindow):
             self.clamp = Adw.Clamp()
             self.box_content.append(self.clamp)
 
-            scrollView.set_child(self.box_content)
-
-            adwbin.set_child(scrollView)
+            adwbin.set_child(self.box_content)
             if (page["folderId"] == folder_id):
 
-                if (page["type"] == 1):
-                    content = Login.init_ui(self, page)
+                # if (page["type"] == 1):
+                #     content = Login.init_ui(self, page)
 
-                if (page["type"] == 2):
-                    content = SecureNote.init_ui(self, page)
+                # if (page["type"] == 2):
+                #     content = SecureNote.init_ui(self, page)
 
-                if (page["type"] == 3):
-                    content = CreditCard.init_ui(self, page)
+                # if (page["type"] == 3):
+                #     content = CreditCard.init_ui(self, page)
 
-                if (page["type"] == 4):
-                    content = Id.init_ui(self, page)
+                # if (page["type"] == 4):
+                #     content = Id.init_ui(self, page)
 
-                self.clamp.set_child(content)
+                # self.clamp.set_child(content)
 
                 # Sidebar items/names
                 name = page["id"]
@@ -183,7 +181,7 @@ class AppWindow(Adw.ApplicationWindow):
                 if (len(title) > 30):
                     title = title[0:27] + "..."
                 
-                stack_sidebar.add_titled(adwbin, name, title)
+                stack_sidebar.add_titled(self.box_content, name, title)
 
         return self.sidebar
             
@@ -200,10 +198,30 @@ class AppWindow(Adw.ApplicationWindow):
 
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
+        page = Server.get_item_by_id(stack.get_visible_child_name())
+
+        if (page["type"] == 1):
+            content = Login.init_ui(self, page)
+            # content = Gtk.Label(label="login")
+
+        if (page["type"] == 2):
+            content = SecureNote.init_ui(self, page)
+            # content = Gtk.Label(label="secure note")
+
+        if (page["type"] == 3):
+            content = CreditCard.init_ui(self, page)
+            # content = Gtk.Label(label="credit card")
+
+        if (page["type"] == 4):
+            content = Id.init_ui(self, page)
+            # content = Gtk.Label(label="ID")
+
+        # print(content)
+
         # remove the old vault item content from the right pane
         self.leaflet_main.remove(self.status_box)
-        self.leaflet_main.append(self.active_folder_stack)
-        self.leaflet_main.set_visible_child(stack)
+        self.leaflet_main.append(content)
+        self.leaflet_main.set_visible_child(content)
         
 
         if (self.leaflet_main.get_folded() == True):
