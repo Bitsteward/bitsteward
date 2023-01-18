@@ -207,8 +207,9 @@ class AppWindow(Adw.ApplicationWindow):
     def on_stack_switch(self, stack, param_spec):
         # remove the old vault item content from the right pane
         self.leaflet_main.remove(self.status_box)
-        self.leaflet_main.set_visible_child(stack)
         self.leaflet_main.append(self.active_folder_stack)
+        self.leaflet_main.set_visible_child(stack)
+        
 
         if (self.leaflet_main.get_folded() == True):
             self.back_button = Gtk.Button(label="Back")
