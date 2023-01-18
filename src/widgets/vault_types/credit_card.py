@@ -15,6 +15,13 @@ load_dotenv()
 class CreditCard(Gtk.Widget):
     def init_ui(self, page):
 
+        scrollView = Gtk.ScrolledWindow()
+        scrollView.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC
+        )
+        scrollView.set_kinetic_scrolling(True)
+
         # content box
         content = Gtk.Box(
             spacing=10,
@@ -24,7 +31,9 @@ class CreditCard(Gtk.Widget):
             margin_bottom=20,
             orientation=Gtk.Orientation.VERTICAL
         )
-        self.clamp.set_child(content)
+
+        scrollView.set_child(content)
+
 
         # label
         vault_item_title = Gtk.Label(label=page["name"])
@@ -32,36 +41,40 @@ class CreditCard(Gtk.Widget):
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
-        # credit card listbox
-        listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-        listbox1.get_style_context().add_class('boxed-list')
-        content.append(listbox1)
 
-        # credit card number
-        row_number = Adw.EntryRow(title="Credit Card Number")
+        ### CreditCard Listbox
+        prefGroup_ID = Adw.PreferencesGroup (title = 'Card information')
+        card = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        prefGroup_ID.add(card)
+        card.get_style_context().add_class('boxed-list')
+        content.append(prefGroup_ID)
+
+        # card number
+        row_number = Adw.EntryRow(title="Card number")
         try:
             row_number.set_text(page["card"]["number"])
         except:
             print(
-                f"could not load credit card number for id: {page['id']} ({page['name']})")
-        listbox1.append(row_number)
+                f"could not load Number for card: {page['id']} ({page['name']})")
+        card.append(row_number)
 
-        # credit card number
-        row_expiration = Adw.EntryRow(title="Expiration (MM/YYYY)")
+        # Expiration date
+        row_expiration = Adw.EntryRow(title="Expiration date")
         try:
-            row_expiration.set_text(page["card"]["expMonth"] + "/" + page["card"]["expYear"])
+            row_expiration.set_text(page["card"]["expYear"] + "/" + page["card"]["expMonth"])
         except:
             print(
-                f"could not load credit card expiration for id: {page['id']} ({page['name']})")
-        listbox1.append(row_expiration)
+                f"could not load Expiration date for card: {page['id']} ({page['name']})")
+        card.append(row_expiration)
 
-        # CVV
-        row_code = Adw.PasswordEntryRow(title="CVV")
+        # Security code
+        row_code = Adw.PasswordEntryRow(title="Security code")
         try:
             row_code.set_text(page["card"]["code"])
         except:
             print(
-                f"could not load credit card CVV for id: {page['id']} ({page['name']})")
-        listbox1.append(row_code)
+                f"could not load Code for card: {page['id']} ({page['name']})")
+        card.append(row_code)
 
-        return content
+
+        return scrollView
