@@ -15,6 +15,13 @@ load_dotenv()
 class Login(Gtk.Widget):
     def init_ui(self, page):
 
+        scrollView = Gtk.ScrolledWindow()
+        scrollView.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC
+        )
+        scrollView.set_kinetic_scrolling(True)
+
         # content box
         content = Gtk.Box(
             spacing=10,
@@ -24,7 +31,9 @@ class Login(Gtk.Widget):
             margin_bottom=20,
             orientation=Gtk.Orientation.VERTICAL
         )
-        self.clamp.set_child(content)
+
+        scrollView.set_child(content)
+
 
         # label
         vault_item_title = Gtk.Label(label=page["name"])
@@ -32,21 +41,22 @@ class Login(Gtk.Widget):
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
-        # Username and password box
-        listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-        listbox1.get_style_context().add_class('boxed-list')
-        content.append(listbox1)
+
+        ### Login Listbox
+        prefGroup_ID = Adw.PreferencesGroup (title = 'Login information')
+        login = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        prefGroup_ID.add(login)
+        login.get_style_context().add_class('boxed-list')
+        content.append(prefGroup_ID)
 
         # Username
         row_username = Adw.EntryRow(title="Username")
-
         try:
             row_username.set_text(page["login"]["username"])
         except:
             print(
-                f"could not load username for id: {page['id']} ({page['name']})")
-
-        listbox1.append(row_username)
+                f"could not load Username for id: {page['id']} ({page['name']})")
+        login.append(row_username)
 
         # Password
         row_password = Adw.PasswordEntryRow(title="Password")
@@ -54,8 +64,24 @@ class Login(Gtk.Widget):
             row_password.set_text(page["login"]["password"])
         except:
             print(
-                f"could not load username for id: {page['id']} ({page['name']})")
+                f"could not load Password for id: {page['id']} ({page['name']})")
+        login.append(row_password)
 
-        listbox1.append(row_password)
+        ### TOTP Listbox
+        prefGroup_ID = Adw.PreferencesGroup (title = 'TOTP')
+        login = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        prefGroup_ID.add(login)
+        login.get_style_context().add_class('boxed-list')
+        content.append(prefGroup_ID)
 
-        return content
+        # Username
+        row_username = Adw.EntryRow(title="TOTP Code")
+        try:
+            row_username.set_text(page["login"]["totp"])
+        except:
+            print(
+                f"could not load Username for id: {page['id']} ({page['name']})")
+        login.append(row_username)
+
+
+        return scrollView
