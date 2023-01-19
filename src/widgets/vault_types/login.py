@@ -15,6 +15,8 @@ load_dotenv()
 class Login(Gtk.Widget):
     def init_ui(self, page):
 
+        clamp = Adw.Clamp()
+
         scrollView = Gtk.ScrolledWindow()
         scrollView.set_policy(
             Gtk.PolicyType.NEVER,
@@ -33,6 +35,7 @@ class Login(Gtk.Widget):
         )
 
         scrollView.set_child(content)
+        clamp.set_child(scrollView)
 
 
         # label
@@ -84,4 +87,4 @@ class Login(Gtk.Widget):
         login.append(row_username)
 
 
-        return scrollView
+        return clamp

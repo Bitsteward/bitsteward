@@ -15,6 +15,8 @@ load_dotenv()
 class CreditCard(Gtk.Widget):
     def init_ui(self, page):
 
+        clamp = Adw.Clamp()
+
         scrollView = Gtk.ScrolledWindow()
         scrollView.set_policy(
             Gtk.PolicyType.NEVER,
@@ -33,6 +35,7 @@ class CreditCard(Gtk.Widget):
         )
 
         scrollView.set_child(content)
+        clamp.set_child(scrollView)
 
 
         # label
@@ -77,4 +80,4 @@ class CreditCard(Gtk.Widget):
         card.append(row_code)
 
 
-        return scrollView
+        return clamp

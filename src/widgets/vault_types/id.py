@@ -15,6 +15,8 @@ load_dotenv()
 class Id(Gtk.Widget):
     def init_ui(self, page):
 
+        clamp = Adw.Clamp()
+
         scrollView = Gtk.ScrolledWindow()
         scrollView.set_policy(
             Gtk.PolicyType.NEVER,
@@ -33,6 +35,7 @@ class Id(Gtk.Widget):
         )
 
         scrollView.set_child(content)
+        clamp.set_child(scrollView)
 
         # label
         vault_item_title = Gtk.Label(label=page["name"])
@@ -191,4 +194,4 @@ class Id(Gtk.Widget):
         contact_info.append(row_email)
 
 
-        return scrollView
+        return clamp

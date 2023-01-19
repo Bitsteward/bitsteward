@@ -185,14 +185,12 @@ class AppWindow(Adw.ApplicationWindow):
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
         try:
-             # remove the old vault item content from the right pane
+            # remove the old vault item content from the right pane
             self.leaflet_main.remove(self.vault_item_content)
         except:
             print("Could not remove previous content")
 
         page = Server.get_item_by_id(stack.get_visible_child_name())
-
-        clamp = Adw.Clamp()
 
         if (page["type"] == 1):
             self.vault_item_content = Login.init_ui(self, page)
@@ -205,16 +203,15 @@ class AppWindow(Adw.ApplicationWindow):
 
         if (page["type"] == 4):
             self.vault_item_content = Id.init_ui(self, page)
-
-        clamp.set_child(self.vault_item_content)
+        
         try:
             # remove the Status page
             self.leaflet_main.remove(self.status_box)
         except:
             print("could not remove the status page")
 
-        self.leaflet_main.append(clamp)
-        self.leaflet_main.set_visible_child(clamp)
+        self.leaflet_main.append(self.vault_item_content)
+        self.leaflet_main.set_visible_child(self.vault_item_content)
 
         if (self.leaflet_main.get_folded() == True):
             self.back_button = Gtk.Button(icon_name="go-previous-symbolic")
