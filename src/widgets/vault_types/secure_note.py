@@ -15,6 +15,13 @@ load_dotenv()
 class SecureNote(Gtk.Widget):
     def init_ui(self, page):
 
+        scrollView = Gtk.ScrolledWindow()
+        scrollView.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC
+        )
+        scrollView.set_kinetic_scrolling(True)
+
         # content box
         content = Gtk.Box(
             spacing=10,
@@ -24,7 +31,9 @@ class SecureNote(Gtk.Widget):
             margin_bottom=20,
             orientation=Gtk.Orientation.VERTICAL
         )
-        self.clamp.set_child(content)
+
+        scrollView.set_child(content)
+
 
         # label
         vault_item_title = Gtk.Label(label=page["name"])
@@ -32,30 +41,21 @@ class SecureNote(Gtk.Widget):
         vault_item_title.get_style_context().add_class('title-1')
         content.append(vault_item_title)
 
-        # Secure Note box
-        listbox1 = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-        listbox1.get_style_context().add_class('boxed-list')
-        content.append(listbox1)
+
+        ### Login Listbox
+        prefGroup_ID = Adw.PreferencesGroup (title = 'Note contents')
+        note = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        prefGroup_ID.add(note)
+        note.get_style_context().add_class('boxed-list')
+        content.append(prefGroup_ID)
 
         # Username
-        row_username = Adw.EntryRow(title="Username")
-
+        row_username = Adw.EntryRow(title="Note")
         try:
-            row_username.set_text(page["login"]["username"])
+            row_username.set_text(page["notes"])
         except:
             print(
-                f"could not load username for id: {page['id']} ({page['name']})")
+                f"could not load Note for id: {page['id']} ({page['name']})")
+        note.append(row_username)
 
-        listbox1.append(row_username)
-
-        # # TOTP
-        # row_totp = Adw.ActionRow(
-        #     subtitle = "Verification code"
-        # )
-        # try:
-        #     row_totp.set_title(page["login"]["totp"])
-        # except:
-        #     print(f"could not load TOTP code for id: {page['id']} ({page['name']})")
-        # listbox1.append(row_totp)
-
-        return content
+        return scrollView
