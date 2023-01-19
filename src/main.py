@@ -105,9 +105,6 @@ class AppWindow(Adw.ApplicationWindow):
         self.sidebar.set_vexpand(True)
         self.sidebar.set_size_request(200, 0)
 
-        # self.leaflet_main.append(self.sidebar)
-        # self.leaflet_main.append(stack_sidebar)
-
         vault_items = Server.get_vault_items()
 
         # add elements to the stack
@@ -118,13 +115,6 @@ class AppWindow(Adw.ApplicationWindow):
             # type 3 = credit card
             # type 4 = ID
 
-            # clamp
-            adwbin = Adw.Bin()
-            self.box_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-            self.clamp = Adw.Clamp()
-            self.box_content.append(self.clamp)
-
-            adwbin.set_child(self.box_content)
             if (page["folderId"] == folder_id):
 
                 name = page["id"]
@@ -133,7 +123,7 @@ class AppWindow(Adw.ApplicationWindow):
                 if (len(title) > 30):
                     title = title[0:27] + "..."
                 
-                stack_sidebar.add_titled(self.box_content, name, title)
+                stack_sidebar.add_titled(Gtk.Box(), name, title)
 
         return self.sidebar
 
