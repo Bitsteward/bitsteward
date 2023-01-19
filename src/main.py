@@ -184,24 +184,37 @@ class AppWindow(Adw.ApplicationWindow):
 
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
+        try:
+             # remove the old vault item content from the right pane
+            self.leaflet_main.remove(self.vault_item_content)
+        except:
+            print("Could not remove previous content")
+
         page = Server.get_item_by_id(stack.get_visible_child_name())
 
+        clamp = Adw.Clamp()
+
         if (page["type"] == 1):
-            content = Login.init_ui(self, page)
+            self.vault_item_content = Login.init_ui(self, page)
 
         if (page["type"] == 2):
-            content = SecureNote.init_ui(self, page)
+            self.vault_item_content = SecureNote.init_ui(self, page)
 
         if (page["type"] == 3):
-            content = CreditCard.init_ui(self, page)
+            self.vault_item_content = CreditCard.init_ui(self, page)
 
         if (page["type"] == 4):
-            content = Id.init_ui(self, page)
+            self.vault_item_content = Id.init_ui(self, page)
 
-        # remove the old vault item content from the right pane
-        self.leaflet_main.remove(self.status_box)
-        self.leaflet_main.append(content)
-        self.leaflet_main.set_visible_child(content)
+        clamp.set_child(self.vault_item_content)
+        try:
+            # remove the Status page
+            self.leaflet_main.remove(self.status_box)
+        except:
+            print("could not remove the status page")
+
+        self.leaflet_main.append(clamp)
+        self.leaflet_main.set_visible_child(clamp)
 
         if (self.leaflet_main.get_folded() == True):
             self.back_button = Gtk.Button(icon_name="go-previous-symbolic")
@@ -211,7 +224,6 @@ class AppWindow(Adw.ApplicationWindow):
     # returns the stack of the active (selected) vault folder
     def on_folder_switch(self, stack, param_spec):
         self.leaflet_main.remove(self.active_folder_stack)
-        self.leaflet_main.append(self.status_box)
         self.leaflet_sidebar.set_visible_child(stack)
         self.active_folder_stack = stack.get_visible_child().get_stack()
         self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
