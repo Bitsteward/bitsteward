@@ -110,11 +110,6 @@ class AppWindow(Adw.ApplicationWindow):
         # add elements to the stack
         for page in vault_items:
 
-            # type 1 = login
-            # type 2 = standalone secure note
-            # type 3 = credit card
-            # type 4 = ID
-
             if (page["folderId"] == folder_id):
 
                 name = page["id"]
@@ -182,17 +177,19 @@ class AppWindow(Adw.ApplicationWindow):
 
         page = Server.get_item_by_id(stack.get_visible_child_name())
 
-        if (page["type"] == 1):
-            self.vault_item_content = Login.init_ui(self, page)
-
-        if (page["type"] == 2):
-            self.vault_item_content = SecureNote.init_ui(self, page)
-
-        if (page["type"] == 3):
-            self.vault_item_content = CreditCard.init_ui(self, page)
-
-        if (page["type"] == 4):
-            self.vault_item_content = Id.init_ui(self, page)
+        match (page["type"]):
+            case 1:
+                # type 1 = login
+                self.vault_item_content = Login.init_ui(self, page)
+            case 2:
+                # type 2 = standalone secure note
+                self.vault_item_content = SecureNote.init_ui(self, page)
+            case 3:
+                # type 3 = credit card
+                self.vault_item_content = CreditCard.init_ui(self, page)
+            case 4:
+                # type 4 = ID
+                self.vault_item_content = Id.init_ui(self, page)
         
         try:
             # remove the Status page
