@@ -1,18 +1,18 @@
 #!/usr/bin/python
 
 
+from dotenv import load_dotenv
+from utility.server_requests import Server
+from widgets.vault_types.id import Id
+from widgets.vault_types.credit_card import CreditCard
+from widgets.vault_types.login import Login
+from widgets.vault_types.secure_note import SecureNote
+from gi.repository import Gtk, Adw, GLib
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib
 
-from widgets.vault_types.secure_note import SecureNote
-from widgets.vault_types.login import Login
-from widgets.vault_types.credit_card import CreditCard
-from widgets.vault_types.id import Id
-from utility.server_requests import Server
 
-from dotenv import load_dotenv
 load_dotenv()
 
 
@@ -33,6 +33,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.connect("destroy", self.on_destroy)
 
         self.init_ui()
+
 
     def init_ui(self):
         self.set_title('Bitsteward')
@@ -57,7 +58,6 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.set_can_navigate_back(True)
         window.append(self.leaflet_main)  # add the content to the main window
 
-
         # Sidebar Leaflet (for the double folder view)
         self.leaflet_sidebar = Adw.Leaflet(
             halign=Gtk.Align.FILL,
@@ -65,28 +65,27 @@ class AppWindow(Adw.ApplicationWindow):
         )
         self.leaflet_sidebar.set_can_unfold(False)
         self.leaflet_sidebar.set_can_navigate_back(True)
-        self.leaflet_main.append(self.leaflet_sidebar)  # add the content to the main window
+        # add the content to the main window
+        self.leaflet_main.append(self.leaflet_sidebar)
 
         self.status_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
-            hexpand= True,
-            vexpand = True
+            hexpand=True,
+            vexpand=True
         )
         status_widget = Adw.StatusPage(
-            icon_name = 'dialog-password-symbolic',
-            valign = Gtk.Align.CENTER,
-            vexpand = True
+            icon_name='dialog-password-symbolic',
+            valign=Gtk.Align.CENTER,
+            vexpand=True
         )
         status_widget.set_title("Bitsteward")
         status_widget.set_description("You need to select an item.")
 
         self.load_vault_folders()
-        
+
         self.status_box.append(status_widget)
 
         self.leaflet_main.append(self.status_box)
-        
-
 
         # display the content
         self.set_content(window)
@@ -117,15 +116,16 @@ class AppWindow(Adw.ApplicationWindow):
 
                 if (len(title) > 30):
                     title = title[0:27] + "..."
-                
+
                 stack_sidebar.add_titled(Gtk.Box(), name, title)
 
         return self.sidebar
+    
 
     def load_vault_folders(self):
-        #create the stack for the folders
+        # create the stack for the folders
         self.stack_sidebar_folder = Gtk.Stack()
-        
+
         # Sidebar
         sidebar = Gtk.StackSidebar()
 
@@ -151,11 +151,13 @@ class AppWindow(Adw.ApplicationWindow):
 
             stack_items = stack_items.get_stack()
 
-        self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
+        self.stack_sidebar_folder.connect(
+            "notify::visible-child", self.on_folder_switch)
 
         # Sidebar
         self.leaflet_sidebar.append(sidebar)
         self.leaflet_sidebar.append(self.stack_sidebar_folder)
+
 
     def on_destroy(self, widget, data=None):
         self.bw_server_pid.terminate
@@ -175,6 +177,7 @@ class AppWindow(Adw.ApplicationWindow):
         except:
             print("Could not remove previous content")
 
+        # get the json of the item that was clicked
         page = Server.get_item_by_id(stack.get_visible_child_name())
 
         match (page["type"]):
@@ -190,27 +193,31 @@ class AppWindow(Adw.ApplicationWindow):
             case 4:
                 # type 4 = ID
                 self.vault_item_content = Id.init_ui(self, page)
-        
+
         try:
             # remove the Status page
             self.leaflet_main.remove(self.status_box)
         except:
             print("could not remove the status page")
 
+        # "add" the child/vault content to the leaflet
         self.leaflet_main.append(self.vault_item_content)
         self.leaflet_main.set_visible_child(self.vault_item_content)
 
+        # append the back button when a page is opened with the main leaflet closed (mobile view)
         if (self.leaflet_main.get_folded() == True):
             self.back_button = Gtk.Button(icon_name="go-previous-symbolic")
             self.header_bar.pack_start(self.back_button)
             self.back_button.connect("clicked", self.on_back_btn_clicked)
+            
 
     # returns the stack of the active (selected) vault folder
     def on_folder_switch(self, stack, param_spec):
         self.leaflet_main.remove(self.active_folder_stack)
         self.leaflet_sidebar.set_visible_child(stack)
         self.active_folder_stack = stack.get_visible_child().get_stack()
-        self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
+        self.active_folder_stack.connect(
+            "notify::visible-child", self.on_stack_switch)
 
 
 def on_activate(app):
