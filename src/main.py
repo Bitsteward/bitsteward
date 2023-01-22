@@ -7,10 +7,10 @@ from widgets.vault_types.id import Id
 from widgets.vault_types.credit_card import CreditCard
 from widgets.vault_types.login import Login
 from widgets.vault_types.secure_note import SecureNote
-from gi.repository import Gtk, Adw, GLib
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw, GLib
 
 
 load_dotenv()
