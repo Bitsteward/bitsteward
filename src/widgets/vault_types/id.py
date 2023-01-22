@@ -8,6 +8,7 @@ from gi.repository import Gtk, Adw, GLib
 
 from gi.repository import Pango
 from dotenv import load_dotenv
+load_dotenv()
 
 
 class Id(Gtk.Widget):
