@@ -129,11 +129,9 @@ class AppWindow(Adw.ApplicationWindow):
         # Sidebar
         sidebar = Gtk.StackSidebar()
 
-        vault_folders = Server.get_vault_folders()
+        vault_folders_json = Server.get_vault_folders()
 
-        stack_items = Gtk.Stack()
-
-        for folder in vault_folders:
+        for folder in vault_folders_json:
 
             sidebar.set_stack(self.stack_sidebar_folder)
             sidebar.set_vexpand(True)
@@ -145,14 +143,11 @@ class AppWindow(Adw.ApplicationWindow):
             if (len(title) > 30):
                 title = title[0:27] + "..."
 
-            stack_items = self.load_vault_items(folder["id"])
+            folder_child = self.load_vault_items(folder["id"])
 
-            self.stack_sidebar_folder.add_titled(stack_items, name, title)
+            self.stack_sidebar_folder.add_titled(folder_child, name, title)
 
-            stack_items = stack_items.get_stack()
-
-        self.stack_sidebar_folder.connect(
-            "notify::visible-child", self.on_folder_switch)
+        self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
 
         # Sidebar
         self.leaflet_sidebar.append(sidebar)
