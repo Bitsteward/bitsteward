@@ -112,7 +112,7 @@ class AppWindow(Adw.ApplicationWindow):
 
         listbox = Gtk.ListBox()
         listbox.get_style_context().add_class('navigation-sidebar')
-        listbox.connect("notify::visible-child", self.on_stack_switch)
+        listbox.connect("row-selected", self.on_stack_switch)
 
         scrollView.set_child(listbox)
         scrollView.set_propagate_natural_width(True)
@@ -132,7 +132,7 @@ class AppWindow(Adw.ApplicationWindow):
                     title = title[0:27] + "..."
                 
                 row = Gtk.ListBoxRow()
-                row.set_child(Gtk.Label(label=title))
+                row.set_child(Gtk.Label(label=name))
                 listbox.append(row)
 
         return scrollView
@@ -183,8 +183,7 @@ class AppWindow(Adw.ApplicationWindow):
 
 
     # handle the clicks to vault items
-    def on_stack_switch(self, stack, param_spec):
-        print("function called")
+    def on_stack_switch(self, listbox, param_spec):
 
         try:
             # remove the old vault item content from the right pane
@@ -192,8 +191,11 @@ class AppWindow(Adw.ApplicationWindow):
         except:
             print("Could not remove previous content")
 
+
         # get the json of the item that was clicked
-        page = Server.get_item_by_id(stack.get_visible_child_name())
+        page = Server.get_item_by_id(listbox.get_selected_row().get_child().get_text())
+
+        print(page)
 
         match (page["type"]):
             case 1:
