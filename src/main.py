@@ -24,7 +24,7 @@ class AppWindow(Adw.ApplicationWindow):
     bw_server_pid = ""
     active_folder_stack = Gtk.Stack()
 
-    all_items_stack = Gtk.Stack()
+    # all_items_listbox = Gtk.ListBox()
 
     def __init__(self, app):
 
@@ -113,6 +113,7 @@ class AppWindow(Adw.ApplicationWindow):
         listbox = Gtk.ListBox()
         listbox.get_style_context().add_class('navigation-sidebar')
         listbox.connect("row-selected", self.on_stack_switch)
+        
 
         scrollView.set_child(listbox)
         scrollView.set_propagate_natural_width(True)
@@ -147,7 +148,7 @@ class AppWindow(Adw.ApplicationWindow):
 
         vault_folders_json = Server.get_vault_folders()
 
-        self.stack_sidebar_folder.add_titled(self.all_items_stack, "allitems", "All items")
+        # self.stack_sidebar_folder.add_titled(self.all_items_stack, "allitems", "All items")
 
         for folder in vault_folders_json:
 
@@ -184,6 +185,7 @@ class AppWindow(Adw.ApplicationWindow):
 
     # handle the clicks to vault items
     def on_stack_switch(self, listbox, param_spec):
+        
 
         try:
             # remove the old vault item content from the right pane
@@ -191,11 +193,12 @@ class AppWindow(Adw.ApplicationWindow):
         except:
             print("Could not remove previous content")
 
+        print(listbox.get_selected_row())
+        # print(self.all_items_listbox.select_row(listbox.get_selected_row()))
 
         # get the json of the item that was clicked
         page = Server.get_item_by_id(listbox.get_selected_row().get_child().get_text())
 
-        print(page)
 
         match (page["type"]):
             case 1:
@@ -229,10 +232,10 @@ class AppWindow(Adw.ApplicationWindow):
             
 
     # returns the stack of the active (selected) vault folder
-    def on_folder_switch(self, stack, param_spec):
+    def on_folder_switch(self, listbox, param_spec):
         self.leaflet_main.remove(self.active_folder_stack)
-        self.leaflet_sidebar.set_visible_child(stack)
-        self.active_folder_stack = stack.get_visible_child().get_stack()
+        self.leaflet_sidebar.set_visible_child(listbox)
+        # self.active_folder_stack = stack.get_visible_child().get_stack()
         self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
 
 
