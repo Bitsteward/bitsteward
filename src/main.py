@@ -24,6 +24,8 @@ class AppWindow(Adw.ApplicationWindow):
     bw_server_pid = ""
     active_folder_stack = Gtk.Stack()
 
+    all_items_stack = Gtk.Stack()
+
     def __init__(self, app):
 
         super(AppWindow, self).__init__(application=app)
@@ -89,6 +91,8 @@ class AppWindow(Adw.ApplicationWindow):
 
         # display the content
         self.set_content(window)
+        
+        # quit()
 
 
     def load_vault_items(self, folder_id):
@@ -104,6 +108,16 @@ class AppWindow(Adw.ApplicationWindow):
         self.sidebar.set_vexpand(True)
         self.sidebar.set_size_request(200, 0)
 
+        scrollView = Gtk.ScrolledWindow()
+
+        listbox = Gtk.ListBox()
+        listbox.get_style_context().add_class('navigation-sidebar')
+        listbox.connect("notify::visible-child", self.on_stack_switch)
+
+        scrollView.set_child(listbox)
+        scrollView.set_propagate_natural_width(True)
+        scrollView.set_min_content_width(200)
+
         vault_items = Server.get_vault_items()
 
         # add elements to the stack
@@ -116,10 +130,12 @@ class AppWindow(Adw.ApplicationWindow):
 
                 if (len(title) > 30):
                     title = title[0:27] + "..."
+                
+                row = Gtk.ListBoxRow()
+                row.set_child(Gtk.Label(label=title))
+                listbox.append(row)
 
-                stack_sidebar.add_titled(Gtk.Box(), name, title)
-
-        return self.sidebar
+        return scrollView
     
 
     def load_vault_folders(self):
@@ -130,6 +146,8 @@ class AppWindow(Adw.ApplicationWindow):
         sidebar = Gtk.StackSidebar()
 
         vault_folders_json = Server.get_vault_folders()
+
+        self.stack_sidebar_folder.add_titled(self.all_items_stack, "allitems", "All items")
 
         for folder in vault_folders_json:
 
@@ -166,6 +184,8 @@ class AppWindow(Adw.ApplicationWindow):
 
     # handle the clicks to vault items
     def on_stack_switch(self, stack, param_spec):
+        print("function called")
+
         try:
             # remove the old vault item content from the right pane
             self.leaflet_main.remove(self.vault_item_content)
@@ -211,8 +231,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_main.remove(self.active_folder_stack)
         self.leaflet_sidebar.set_visible_child(stack)
         self.active_folder_stack = stack.get_visible_child().get_stack()
-        self.active_folder_stack.connect(
-            "notify::visible-child", self.on_stack_switch)
+        self.active_folder_stack.connect("notify::visible-child", self.on_stack_switch)
 
 
 def on_activate(app):
