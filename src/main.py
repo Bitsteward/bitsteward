@@ -192,12 +192,10 @@ class AppWindow(Adw.ApplicationWindow):
 
         try:
             # remove the old vault item content from the right pane
+            print(self.leaflet_main.get_visible_child())
             self.leaflet_main.remove(self.vault_item_content)
         except:
             print("Could not remove previous content")
-
-        print(listbox.get_selected_row())
-        # print(self.all_items_listbox.select_row(listbox.get_selected_row()))
 
         # get the json of the item that was clicked
         page = Server.get_item_by_id(listbox.get_selected_row().id)
@@ -219,6 +217,7 @@ class AppWindow(Adw.ApplicationWindow):
 
         try:
             # remove the Status page
+            print(self.leaflet_main.get_visible_child())
             self.leaflet_main.remove(self.status_box)
         except:
             print("could not remove the status page")
