@@ -8,11 +8,11 @@ class CustomListBoxRow(Gtk.ListBoxRow):
         'id': (GObject.TYPE_INT, 'ID', 'The custom ID', 0, GObject.G_MAXINT, 0, GObject.PARAM_READWRITE)
     }
 
-    def __init__(self, child=None, id=0):
+    def __init__(self, labelText="No label set.", id=0):
         super().__init__()
+        if labelText:
+            self.set_child(Gtk.Label(label=labelText))
         self.id = id
-        if child:
-            self.set_child(child)
 
     def do_get_property(self, prop):
         if prop.name == 'id':

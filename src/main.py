@@ -133,10 +133,7 @@ class AppWindow(Adw.ApplicationWindow):
                 if (len(title) > 30):
                     title = title[0:27] + "..."
                 
-                row = CustomListBoxRow(child=Gtk.Label(label="Hello"), id=name)
-                # row = Gtk.ListBoxRow()
-                row.set_child(Gtk.Label(label=title))
-                
+                row = CustomListBoxRow(labelText=title, id=name)
                 listbox.append(row)
 
         return scrollView
