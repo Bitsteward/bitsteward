@@ -7,6 +7,7 @@ from widgets.vault_types.id import Id
 from widgets.vault_types.credit_card import CreditCard
 from widgets.vault_types.login import Login
 from widgets.vault_types.secure_note import SecureNote
+from widgets.CustomWidgets.SidebarListBoxRow import CustomListBoxRow
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -132,8 +133,10 @@ class AppWindow(Adw.ApplicationWindow):
                 if (len(title) > 30):
                     title = title[0:27] + "..."
                 
-                row = Gtk.ListBoxRow()
-                row.set_child(Gtk.Label(label=name))
+                row = CustomListBoxRow(child=Gtk.Label(label="Hello"), id=name)
+                # row = Gtk.ListBoxRow()
+                row.set_child(Gtk.Label(label=title))
+                
                 listbox.append(row)
 
         return scrollView
@@ -197,7 +200,7 @@ class AppWindow(Adw.ApplicationWindow):
         # print(self.all_items_listbox.select_row(listbox.get_selected_row()))
 
         # get the json of the item that was clicked
-        page = Server.get_item_by_id(listbox.get_selected_row().get_child().get_text())
+        page = Server.get_item_by_id(listbox.get_selected_row().id)
 
 
         match (page["type"]):
