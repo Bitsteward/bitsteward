@@ -31,10 +31,6 @@ class AppWindow(Adw.ApplicationWindow):
 
         super(AppWindow, self).__init__(application=app)
 
-        self.bw_server_pid = Server.load_json_data()
-
-        self.connect("destroy", self.on_destroy)
-
         self.init_ui()
 
 
@@ -173,10 +169,6 @@ class AppWindow(Adw.ApplicationWindow):
         self.leaflet_sidebar.append(self.stack_sidebar_folder)
 
 
-    def on_destroy(self, widget, data=None):
-        self.bw_server_pid.terminate
-
-
     # button to go back in folded view
     def on_back_btn_clicked(self, param):
         self.header_bar.remove(self.back_button)
@@ -186,7 +178,6 @@ class AppWindow(Adw.ApplicationWindow):
     # handle the clicks to vault items
     def on_stack_switch(self, listbox, param_spec):
         
-
         try:
             # remove the old vault item content from the right pane
             print(self.leaflet_main.get_visible_child())

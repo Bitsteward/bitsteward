@@ -13,45 +13,35 @@ load_dotenv()
 hostname = "localhost"
 port = "8055"
 
+
+bw_location = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+bw_password = os.getenv("BW_PASSWORD")
+
 class Server():
 
-    bw_server_pid = ""
-
-    server_ready = False
-
-    def __init__(self):
-        self.load_json_data
-
-    # load the JSON data from the BW Server
-    def load_json_data():
-        bw_location = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        bw_server_pid = subprocess.Popen([bw_location + "/bw", "serve", "--port", port, "--session", os.getenv("BW_SESSION")])
-        
-
-        while True:
-            try:
-                requests.get(f"http://{hostname}:{port}/status")
-                return bw_server_pid
-            except:
-                time.sleep(0.1)
+    
 
     def get_vault_items():
-        requests.post(f"http://{hostname}:{port}/sync")
-        cmdOutput = requests.get(f"http://{hostname}:{port}/list/object/items")
+        p = subprocess.Popen([bw_location + '/bw', "list", "items"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = p.communicate(input=bw_password.encode())
+        output = output.decode()
 
-        jsonOutput = json.loads(cmdOutput.content)
-        return jsonOutput["data"]["data"]
+        jsonOutput = json.loads(output)
+        return jsonOutput
 
     def get_vault_folders():
-        requests.post(f"http://{hostname}:{port}/sync")
-        cmdOutput = requests.get(f"http://{hostname}:{port}/list/object/folders")
+        subprocess.Popen([bw_location + '/bw', "sync"])
+        p = subprocess.Popen([bw_location + '/bw', "list", "folders"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = p.communicate(input=bw_password.encode())
+        output = output.decode()
 
-        jsonOutput = json.loads(cmdOutput.content)
-        return jsonOutput["data"]["data"]
+        jsonOutput = json.loads(output)
+        return jsonOutput
 
     def get_item_by_id(id):
-        requests.post(f"http://{hostname}:{port}/sync")
-        cmdOutput = requests.get(f"http://{hostname}:{port}/object/item/{id}")
-        
-        jsonOutput = json.loads(cmdOutput.content)
-        return jsonOutput["data"]
+        p = subprocess.Popen([bw_location + '/bw', "get", "item", id], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = p.communicate(input=bw_password.encode())
+        output = output.decode()
+
+        jsonOutput = json.loads(output)
+        return jsonOutput
