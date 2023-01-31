@@ -14,7 +14,9 @@ load_dotenv()
 class CreditCard(Gtk.Widget):
     def init_ui(self, page):
 
-        clamp = Adw.Clamp()
+        box_content = Gtk.Box()
+
+        clamp = Adw.Clamp()        
 
         scrollView = Gtk.ScrolledWindow()
         scrollView.set_policy(
@@ -33,10 +35,11 @@ class CreditCard(Gtk.Widget):
             orientation=Gtk.Orientation.VERTICAL
         )
 
-        scrollView.set_child(content)
-        clamp.set_child(scrollView)
+        clamp.set_child(content)
+        scrollView.set_child(clamp)
+        box_content.append(scrollView)
 
-
+        
         # label
         vault_item_title = Gtk.Label(label=page["name"])
         vault_item_title.set_ellipsize(Pango.EllipsizeMode.END)
@@ -79,4 +82,4 @@ class CreditCard(Gtk.Widget):
         card.append(row_code)
 
 
-        return clamp
+        return box_content

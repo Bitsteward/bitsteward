@@ -14,7 +14,9 @@ load_dotenv()
 class SecureNote(Gtk.Widget):
     def init_ui(self, page):
 
-        clamp = Adw.Clamp()
+        box_content = Gtk.Box()
+
+        clamp = Adw.Clamp()        
 
         scrollView = Gtk.ScrolledWindow()
         scrollView.set_policy(
@@ -33,8 +35,9 @@ class SecureNote(Gtk.Widget):
             orientation=Gtk.Orientation.VERTICAL
         )
 
-        scrollView.set_child(content)
-        clamp.set_child(scrollView)
+        clamp.set_child(content)
+        scrollView.set_child(clamp)
+        box_content.append(scrollView)
 
 
         # label
@@ -60,4 +63,4 @@ class SecureNote(Gtk.Widget):
                 f"could not load Note for id: {page['id']} ({page['name']})")
         note.append(row_username)
 
-        return clamp
+        return box_content
