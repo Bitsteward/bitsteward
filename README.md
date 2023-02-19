@@ -3,6 +3,9 @@
 
 Bitsteward is a very early alpha Bitwarden client made with GTK4 and Libadwaita. It is NOT secure at the moment
 
+## This application is released under the GNU General Public License version 3.
+This means you need to make the code open to the public with the same license (GPLv3) as the one the project currently uses. You can modify, publish, use commercially as long as clear credit is given and the code remains open and licensed under GPLv3.
+
 🚧 The readme is under construction! 🚧
 
 ## How to run
