@@ -11,8 +11,7 @@ from widgets.CustomWidgets.SidebarListBoxRow import CustomListBoxRow
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib
-
+from gi.repository import Gtk, Adw, GLib, Gdk
 
 load_dotenv()
 
@@ -35,7 +34,7 @@ class AppWindow(Adw.ApplicationWindow):
 
 
     def init_ui(self):
-        self.set_title('Bitsteward')
+        self.set_title("Bitsteward")
         self.set_default_size(800, 550)  # default app size
         self.set_size_request(300, 200)  # minimum app size
         # add devel stripes to the headerbar
@@ -45,8 +44,16 @@ class AppWindow(Adw.ApplicationWindow):
         window = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
         # Headerbar
-        self.header_bar = Gtk.HeaderBar()
-        window.append(self.header_bar)
+        self.header_bar = Adw.HeaderBar()
+        # self.header_bar.set_title_widget()
+
+        # Sidebar Headerbar
+        self.headerbar_sidebar = Adw.HeaderBar()
+        self.headerbar_sidebar.set_show_end_title_buttons(False)
+
+        # sidebar item headerbar
+        self.headerbar_sidebar_folder = Adw.HeaderBar()
+        self.headerbar_sidebar_folder.set_show_end_title_buttons(False)
 
         # Leaflet
         self.leaflet_main = Adw.Leaflet(
@@ -72,6 +79,7 @@ class AppWindow(Adw.ApplicationWindow):
             hexpand=True,
             vexpand=True
         )
+        self.status_box.append(self.header_bar)
         status_widget = Adw.StatusPage(
             icon_name='dialog-password-symbolic',
             valign=Gtk.Align.CENTER,
@@ -93,7 +101,7 @@ class AppWindow(Adw.ApplicationWindow):
 
 
     def load_vault_items(self, folder_id):
-        ### SideBar ###
+
         # Stack
         stack_sidebar = Gtk.Stack()
         stack_sidebar.set_hexpand(True)
@@ -104,6 +112,9 @@ class AppWindow(Adw.ApplicationWindow):
         self.sidebar.set_stack(stack_sidebar)
         self.sidebar.set_vexpand(True)
         self.sidebar.set_size_request(200, 0)
+
+        self.sidebar_box.append(self.headerbar_sidebar)
+        self.sidebar_box.append(self.sidebar)
 
         scrollView = Gtk.ScrolledWindow()
 
@@ -136,11 +147,21 @@ class AppWindow(Adw.ApplicationWindow):
     
 
     def load_vault_folders(self):
+        ### SideBar ###
+        self.sidebar_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            hexpand=True,
+            vexpand=True
+        )
+
         # create the stack for the folders
         self.stack_sidebar_folder = Gtk.Stack()
 
         # Sidebar
         sidebar = Gtk.StackSidebar()
+
+        self.sidebar_box.append(self.headerbar_sidebar)
+        self.sidebar_box.append(sidebar)
 
         vault_folders_json = Server.get_vault_folders()
 
@@ -165,7 +186,7 @@ class AppWindow(Adw.ApplicationWindow):
         self.stack_sidebar_folder.connect("notify::visible-child", self.on_folder_switch)
 
         # Sidebar
-        self.leaflet_sidebar.append(sidebar)
+        self.leaflet_sidebar.append(self.sidebar_box)
         self.leaflet_sidebar.append(self.stack_sidebar_folder)
 
 
@@ -187,7 +208,6 @@ class AppWindow(Adw.ApplicationWindow):
 
         # get the json of the item that was clicked
         page = Server.get_item_by_id(listbox.get_selected_row().id)
-
 
         match (page["type"]):
             case 1:
