@@ -1,4 +1,4 @@
-Notice: the development has paused while I am in school, the project has not been abandonned.
+Notice: the development has paused while I am in school, the project has not been abandonned -- *yet*. All contributions are welcome!
 
 # Bitsteward
 ## If you want to try out Bitsteward, it is highly recommended that you use a vault with data that you do not mind being considered leaked. The current implementation is *not* secure, and any program could potentially see all your vault items. (The screenshots are from a Bitwarden vault created specifically for the development of this application)
